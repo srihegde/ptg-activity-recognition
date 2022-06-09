@@ -3,7 +3,7 @@
 # specify here default training configuration
 defaults:
   - _self_
-  - datamodule: mnist.yaml
+  - datamodule: h2o.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
@@ -34,13 +34,13 @@ defaults:
 original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
-data_dir: ${original_work_dir}/data/
+data_dir: ${original_work_dir}/data/h2o
 
 # pretty print config at the start of the run using Rich library
 print_config: True
 
 # disable python warnings if they annoy you
-ignore_warnings: True
+ignore_warnings: False
 
 # set False to skip model training
 train: True

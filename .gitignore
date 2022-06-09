@@ -127,6 +127,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Sublime Text project
+*.sublime-project
+
 ### VisualStudioCode
 .vscode/*
 !.vscode/settings.json

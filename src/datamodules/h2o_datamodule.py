@@ -1,3 +1,12 @@
+'''
+
+TODO:
+* Branching for dataset loading for Frame vs Video training
+* Cleaning and formatting
+* Use label_split info for VideoDataset
+
+'''
+
 from typing import Optional, Tuple
 
 import torch
@@ -7,7 +16,7 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
 
 
-class MNISTDataModule(LightningDataModule):
+class H2ODataModule(LightningDataModule):
     """Example of LightningDataModule for MNIST dataset.
 
     A DataModule implements 5 key methods:
@@ -27,6 +36,7 @@ class MNISTDataModule(LightningDataModule):
     def __init__(
         self,
         data_dir: str = "data/",
+        data_type: str = "frame",
         train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
         batch_size: int = 64,
         num_workers: int = 0,
@@ -36,11 +46,15 @@ class MNISTDataModule(LightningDataModule):
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
+        self.data_type = data_type
 
         # data transformations
-        self.transforms = transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-        )
+        if self.data_type == "frame":
+            self.transforms = transforms.Compose(
+                [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            )
+        elif self.data_type == "video":
+            self.transforms = None
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
@@ -48,7 +62,7 @@ class MNISTDataModule(LightningDataModule):
 
     @property
     def num_classes(self) -> int:
-        return 10
+        return 37       # Action (interaction) classes
 
     def prepare_data(self):
         """Download data if needed.
@@ -56,8 +70,7 @@ class MNISTDataModule(LightningDataModule):
         This method is called only from a single GPU.
         Do not use it to assign state (self.x = y).
         """
-        MNIST(self.hparams.data_dir, train=True, download=True)
-        MNIST(self.hparams.data_dir, train=False, download=True)
+        pass
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
