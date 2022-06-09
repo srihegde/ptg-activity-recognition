@@ -13,7 +13,7 @@
 
 
 # class VideoRecord(object):
-#     """Helper class for class VideoFrameDataset. This class represents a video sample's metadata.
+#     """Helper class for class H2OVideoDataset. This class represents a video sample's metadata.
 
 #     Args:
 #         root_datapath: the system path to the root folder
@@ -57,7 +57,7 @@
 #             return [int(label_id) for label_id in self._data[3:]]
 
 
-# class VideoFrameDataset(torch.utils.data.Dataset):
+# class H2OVideoDataset(torch.utils.data.Dataset):
 #     r"""
 #     A highly efficient and adaptable dataset class for videos.
 #     Instead of loading every frame of a video,
@@ -127,7 +127,7 @@
 #         transform=None,
 #         test_mode: bool = False,
 #     ):
-#         super(VideoFrameDataset, self).__init__()
+#         super(H2OVideoDataset, self).__init__()
 
 #         self.root_path = root_path
 #         self.annotationfile_path = annotationfile_path
@@ -282,7 +282,7 @@
 #     """Converts a list of PIL images in the range [0,255] to a torch.FloatTensor of shape
 #     (NUM_IMAGES x CHANNELS x HEIGHT x WIDTH) in the range [0,1].
 
-#     Can be used as first transform for ``VideoFrameDataset``.
+#     Can be used as first transform for ``H2OVideoDataset``.
 #     """
 
 #     @staticmethod

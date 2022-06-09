@@ -1,20 +1,18 @@
 _target_: src.datamodules.h2o_datamodule.H2ODataModule
 
-data_dir: ${data_dir} # data_dir is specified in test/train yaml file
-
-pose:
-  - _self_
+pose_files:
   - train_list: ${data_dir}/label_split/pose_train.txt
-  - val_list: ${data_dir}/label_split/pose_val.txt
-  - test_list: ${data_dir}/label_split/pose_test.txt
+    val_list: ${data_dir}/label_split/pose_val.txt
+    test_list: ${data_dir}/label_split/pose_test.txt
 
-action:
-  - _self_
+action_files:
   - train_list: ${data_dir}/label_split/action_train.txt
-  - val_list: ${data_dir}/label_split/action_val.txt
-  - test_list: ${data_dir}/label_split/action_test.txt
+    val_list: ${data_dir}/label_split/action_val.txt
+    test_list: ${data_dir}/label_split/action_test.txt
+
+data_dir: ${data_dir} # data_dir is specified in test/train yaml file
+data_type: "frame"
 
 batch_size: 64
-train_val_test_split: [55_000, 5_000, 10_000]
 num_workers: 0
 pin_memory: False

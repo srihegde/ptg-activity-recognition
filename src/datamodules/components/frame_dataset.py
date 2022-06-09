@@ -20,21 +20,30 @@ class H2OFrameDataset(torch.utils.data.Dataset):
 
     Args:
     root_dir (string): Directory with all the images.
-    mode (string): Denotes the split of data to be loaded (train (default) | test | val)
+    data_list_file (string): File with list of filenames of all the samples
     transform (callable, optional): Optional transform to be applied on a sample.
     """
 
-    def __init__(self, root_dir: str, mode: str = "train", transform=None):
+    def __init__(self, root_dir: str, data_list_file: str, transform=None):
         super(H2OFrameDataset, self).__init__()
 
         self.root_dir = root_dir
-        self.frame_list = self._get_frame_list(mode)
+        self.frame_list = self._get_frame_list(data_list_file)
         self.transform = transform
+
+    def _get_frame_list(self, data_file: str) -> List[str]:
+        frame_list: List[str]
+        with open(data_file) as f:
+            lines = f.readlines()
+            frame_list = [os.path.join(self.root_dir, line.strip()) for line in lines]
+
+        return frame_list
 
     def _load_image(self, frame_file: str) -> Image.Image:
         frame = Image.open(frame_file).convert("RGB")
         if self.transform is not None:
             frame = self.transform(frame)
+
         return frame
 
     def _load_hand_pose(self, annotation_file: str) -> Tuple[List[float], List[float]]:
@@ -67,15 +76,6 @@ class H2OFrameDataset(torch.utils.data.Dataset):
             verb = int(float(lines[0]))
 
         return verb
-
-    def _get_frame_list(self, mode: str) -> List[str]:
-        data_file = os.path.join(self.root_dir, f"label_split/pose_{mode}.txt")
-        frame_list: List[str]
-        with open(data_file) as f:
-            lines = f.readlines()
-            frame_list = [os.path.join(self.root_dir, line.strip()) for line in lines]
-
-        return frame_list
 
     def __len__(self) -> int:
         return len(self.frame_list)

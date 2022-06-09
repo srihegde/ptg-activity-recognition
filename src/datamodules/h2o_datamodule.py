@@ -1,19 +1,18 @@
 """
 
 TODO:
-* Branching for dataset loading for Frame vs Video training
-* Cleaning and formatting
+* Separate transforms for training and testing
 * Use label_split info for VideoDataset
 
 """
 
-from typing import Optional, Tuple
+from typing import Optional, Dict
 
-import torch
+# import torch
 from pytorch_lightning import LightningDataModule
-from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
-from torchvision.datasets import MNIST
+from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
+from .components.frame_dataset import H2OFrameDataset
 
 
 class H2ODataModule(LightningDataModule):
@@ -35,9 +34,10 @@ class H2ODataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_dir: str = "data/",
+        pose_files: Dict,
+        action_files: Dict,
+        data_dir: str = "data/h2o",
         data_type: str = "frame",
-        train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -85,14 +85,27 @@ class H2ODataModule(LightningDataModule):
 
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
-            trainset = MNIST(self.hparams.data_dir, train=True, transform=self.transforms)
-            testset = MNIST(self.hparams.data_dir, train=False, transform=self.transforms)
-            dataset = ConcatDataset(datasets=[trainset, testset])
-            self.data_train, self.data_val, self.data_test = random_split(
-                dataset=dataset,
-                lengths=self.hparams.train_val_test_split,
-                generator=torch.Generator().manual_seed(42),
-            )
+            if self.data_type == "frame":
+                self.data_train = H2OFrameDataset(
+                    self.hparams.data_dir,
+                    self.hparams.pose_files["train_list"],
+                    transform=self.transforms,
+                )
+                self.data_val = H2OFrameDataset(
+                    self.hparams.data_dir,
+                    self.hparams.pose_files["val_list"],
+                    transform=self.transforms,
+                )
+                self.data_test = H2OFrameDataset(
+                    self.hparams.data_dir,
+                    self.hparams.pose_files["test_list"],
+                    transform=self.transforms,
+                )
+            elif self.data_type == "video":
+                # self.data_train = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['train_list'], transform=self.transforms)
+                # self.data_val = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['val_list'], transform=self.transforms)
+                # self.data_test = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['test_list'], transform=self.transforms)
+                pass
 
     def train_dataloader(self):
         return DataLoader(
