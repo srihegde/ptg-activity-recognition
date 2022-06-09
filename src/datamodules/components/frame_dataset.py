@@ -1,18 +1,18 @@
 """
 
 TODO:
+* Add transforms functionality
 * Add comments + docs
 
 """
 
 import os
 import os.path
-from typing import Any, Dict, List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 import torch
 from PIL import Image
-from torchvision import transforms
 
 
 class H2OFrameDataset(torch.utils.data.Dataset):
@@ -96,9 +96,7 @@ class H2OFrameDataset(torch.utils.data.Dataset):
         path_list = "/".join(v_path[:-2])
         fname = v_path[-1].split(".")[0]
 
-        l_hand, r_hand = self._load_hand_pose(
-            os.path.join(path_list, "hand_pose", f"{fname}.txt")
-        )
+        l_hand, r_hand = self._load_hand_pose(os.path.join(path_list, "hand_pose", f"{fname}.txt"))
         obj_label, obj_pose = self._load_obj_data(
             os.path.join(path_list, "obj_pose", f"{fname}.txt")
         )

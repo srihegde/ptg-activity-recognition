@@ -15,7 +15,7 @@ repos:
     rev: 22.1.0
     hooks:
       - id: black
-        args: [--line-length, "88"]
+        args: [--line-length, "99"]
         additional_dependencies: ["click==8.0.4"]
 
   # # python import sorting
@@ -40,11 +40,11 @@ repos:
         types: [yaml]
 
   # python code analysis
-  # - repo: https://github.com/PyCQA/flake8
-  #   rev: 4.0.1
-  #   hooks:
-  #     - id: flake8
-  #       args: [--ignore=E203, W503]
+  - repo: https://github.com/PyCQA/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        args: [--ignore, "E203, W503, E501"]
 
   # jupyter notebook cell output clearing
   - repo: https://github.com/kynan/nbstripout
