@@ -13,7 +13,12 @@ Use the following command to skip slow tests:
 @pytest.mark.slow
 def test_experiments():
     """Test running all available experiment configs for 1 epoch."""
-    command = ["train.py", "-m", "experiment=glob(*)", "++trainer.max_epochs=1"]
+    command = [
+        "train.py",
+        "-m",
+        "experiment=glob(*)",
+        "++trainer.max_epochs=1",
+    ]
     run_command(command)
 
 
