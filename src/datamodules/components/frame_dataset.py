@@ -10,16 +10,16 @@ TODO:
 
 import os
 import os.path
+from typing import Any, List, Tuple, Union
+
 import numpy as np
+import torch
 from PIL import Image
 from torchvision import transforms
-import torch
-from typing import List, Union, Tuple, Any
 
 
 class H2OFrameDataset(torch.utils.data.Dataset):
-    """
-    A dataset class to load labels per frame
+    """A dataset class to load labels per frame.
 
     Args:
     root_dir (string): Directory with all the images.

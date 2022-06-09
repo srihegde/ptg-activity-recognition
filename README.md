@@ -13,7 +13,7 @@
 
 ## Description
 
-Activity recognition in FPV using multi-modal data 
+Activity recognition in FPV using multi-modal data
 
 ## How to run
 
