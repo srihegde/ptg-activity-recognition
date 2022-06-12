@@ -10,24 +10,27 @@ TODO:
 from typing import Any, List
 
 import torch
-from torch import nn
 from pytorch_lightning import LightningModule
-from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
+from torch import nn
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
+from torchvision.models import ConvNeXt_Tiny_Weights, convnext_tiny
 
 
 class UnifiedFCNModule(nn.Module):
-    '''Class implements fully convolutional network for extracting spatial features from the video frames.
+    """Class implements fully convolutional network for extracting spatial features from the video
+    frames.
 
     Args: TBD
-    '''
-    def __init__(self, net: str, num_cpts: int, obj_classes: int, verb_classes: int, batchnorm: bool = True):
+    """
+
+    def __init__(
+        self, net: str, num_cpts: int, obj_classes: int, verb_classes: int, batchnorm: bool = True
+    ):
         super(UnifiedFCNModule, self).__init__()
         self.net = self._select_network(net)
 
-
-    def _select_network(self, net_opt:str) -> nn.Module:
+    def _select_network(self, net_opt: str) -> nn.Module:
         net: nn.Module = None
         if net_opt == "convnext_tiny":
             net = convnext_tiny(weights=ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
@@ -37,21 +40,26 @@ class UnifiedFCNModule(nn.Module):
         return net
 
     def forward(self, x: torch.Tensor):
-        g = self.net(x)
+        # g = self.net(x)
         # h_grid = g[...,]
+        pass
+
 
 class TemporalModule(nn.Module):
-    """docstring for TemporalModule"""
+    """docstring for TemporalModule."""
+
     def __init__(self, arg):
         super(TemporalModule, self).__init__()
         self.arg = arg
-        
+
 
 class UnifiedHOModule(LightningModule):
-    ''' This class implements the spatio-temporal model used for unified representation of hands and interacting objects in the scene. This model also performs the activity recognition for the given frame sequence.
+    """This class implements the spatio-temporal model used for unified representation of hands and
+    interacting objects in the scene. This model also performs the activity recognition for the
+    given frame sequence.
 
     Args: TBD
-    '''
+    """
 
     def __init__(
         self,

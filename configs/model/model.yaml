@@ -11,4 +11,4 @@ fcn:
   batchnorm: False
 
 temporal:
-    _target_: src.models.unified_ho_module.TemporalModule
+  _target_: src.models.unified_ho_module.TemporalModule

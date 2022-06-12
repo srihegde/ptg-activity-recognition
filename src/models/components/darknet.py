@@ -1,15 +1,12 @@
-'''
-Adapted from: https://github.com/longcw/yolo2-pytorch
-(Including the folders 'layers/' and 'utils/' in this 'components/' directory)
-'''
+"""Adapted from: https://github.com/longcw/yolo2-pytorch (Including the folders 'layers/' and
+'utils/' in this 'components/' directory)"""
 
-import torch
 import numpy as np
+import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from .utils import network as net_utils
 from .layers.reorg.reorg_layer import ReorgLayer
+from .utils import network as net_utils
 
 
 def _make_layers(in_channels, net_cfg, batchnorm):
@@ -21,20 +18,20 @@ def _make_layers(in_channels, net_cfg, batchnorm):
             layers.append(layer)
     else:
         for item in net_cfg:
-            if item == 'M':
+            if item == "M":
                 layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
             else:
                 out_channels, ksize = item
                 if batchnorm:
-                    layers.append(net_utils.Conv2d_BatchNorm(in_channels,
-                                                             out_channels,
-                                                             ksize,
-                                                             same_padding=True))
+                    layers.append(
+                        net_utils.Conv2d_BatchNorm(
+                            in_channels, out_channels, ksize, same_padding=True
+                        )
+                    )
                 else:
-                    layers.append(net_utils.Conv2d(in_channels, 
-                                                    out_channels,
-                                                    ksize,
-                                                    same_padding=True))
+                    layers.append(
+                        net_utils.Conv2d(in_channels, out_channels, ksize, same_padding=True)
+                    )
                 in_channels = out_channels
 
     return nn.Sequential(*layers), in_channels
@@ -47,19 +44,19 @@ class Darknet19(nn.Module):
         net_cfgs = [
             # conv1_set
             [(32, 3)],
-            ['M', (64, 3)],
-            ['M', (128, 3), (64, 1), (128, 3)],
-            ['M', (256, 3), (128, 1), (256, 3)],
-            ['M', (512, 3), (256, 1), (512, 3), (256, 1), (512, 3)],
+            ["M", (64, 3)],
+            ["M", (128, 3), (64, 1), (128, 3)],
+            ["M", (256, 3), (128, 1), (256, 3)],
+            ["M", (512, 3), (256, 1), (512, 3), (256, 1), (512, 3)],
             # conv2
-            ['M', (1024, 3), (512, 1), (1024, 3), (512, 1), (1024, 3)],
+            ["M", (1024, 3), (512, 1), (1024, 3), (512, 1), (1024, 3)],
             # ------------
             # conv3
             [(1024, 3), (1024, 3)],
             # conv4
             [(64, 1)],
             # conv 5
-            [(1024, 3)]
+            [(1024, 3)],
         ]
 
         # darknet
@@ -73,10 +70,10 @@ class Darknet19(nn.Module):
         # stride*stride times the channels of conv4
         self.reorg = ReorgLayer(stride=2)
         # cat [conv4, conv3]
-        self.conv5, c5 = _make_layers((c4*(stride*stride) + c3), net_cfgs[8])
+        self.conv5, c5 = _make_layers((c4 * (stride * stride) + c3), net_cfgs[8])
 
         # elements in 'out_channels' dimension depicts the flattened grid
-        out_channels = 5*2*(3*num_cpts + 1 + obj_classes + verb_classes)
+        out_channels = 5 * 2 * (3 * num_cpts + 1 + obj_classes + verb_classes)
         # grid formation layer
         self.conv6 = net_utils.Conv2d(c5, out_channels, 1, 1, relu=False)
 
@@ -88,15 +85,19 @@ class Darknet19(nn.Module):
         conv4_reorg = self.reorg(conv4)
         cat_4_3 = torch.cat([conv4_reorg, conv3], 1)
         conv5 = self.conv5(cat_4_3)
-        grid = self.conv6(conv5)   # batch_size, out_channels, h, w
+        grid = self.conv6(conv5)  # batch_size, out_channels, h, w
 
         return grid
 
     def load_from_npz(self, fname, num_conv=None):
-        dest_src = {'conv.weight': 'kernel', 'conv.bias': 'biases',
-                    'bn.weight': 'gamma', 'bn.bias': 'biases',
-                    'bn.running_mean': 'moving_mean',
-                    'bn.running_var': 'moving_variance'}
+        dest_src = {
+            "conv.weight": "kernel",
+            "conv.bias": "biases",
+            "bn.weight": "gamma",
+            "bn.bias": "biases",
+            "bn.running_mean": "moving_mean",
+            "bn.running_var": "moving_variance",
+        }
         params = np.load(fname)
         own_dict = self.state_dict()
         keys = list(own_dict.keys())
@@ -104,19 +105,19 @@ class Darknet19(nn.Module):
         for i, start in enumerate(range(0, len(keys), 5)):
             if num_conv is not None and i >= num_conv:
                 break
-            end = min(start+5, len(keys))
+            end = min(start + 5, len(keys))
             for key in keys[start:end]:
-                list_key = key.split('.')
-                ptype = dest_src['{}.{}'.format(list_key[-2], list_key[-1])]
-                src_key = '{}-convolutional/{}:0'.format(i, ptype)
+                list_key = key.split(".")
+                ptype = dest_src["{}.{}".format(list_key[-2], list_key[-1])]
+                src_key = "{}-convolutional/{}:0".format(i, ptype)
                 print((src_key, own_dict[key].size(), params[src_key].shape))
                 param = torch.from_numpy(params[src_key])
-                if ptype == 'kernel':
+                if ptype == "kernel":
                     param = param.permute(3, 2, 0, 1)
                 own_dict[key].copy_(param)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     net = Darknet19()
     # net.load_from_npz('models/yolo-voc.weights.npz')
-    net.load_from_npz('models/darknet19.weights.npz', num_conv=18)
+    net.load_from_npz("models/darknet19.weights.npz", num_conv=18)
