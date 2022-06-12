@@ -18,12 +18,12 @@ repos:
         args: [--line-length, "99"]
         additional_dependencies: ["click==8.0.4"]
 
-  # # python import sorting
-  # - repo: https://github.com/PyCQA/isort
-  #   rev: 5.10.1
-  #   hooks:
-  #     - id: isort
-  #       args: ["--profile", "black", "--filter-files"]
+  # python import sorting
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: ["--profile", "black", "--filter-files"]
 
   # python docstring formatting
   - repo: https://github.com/myint/docformatter

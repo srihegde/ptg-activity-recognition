@@ -2,16 +2,19 @@
 
 TODO:
 * Separate transforms for training and testing
+* Transform input frame to 416x416
 * Use label_split info for VideoDataset
+* Update documentation
 
 """
 
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 # import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
+
 from .components.frame_dataset import H2OFrameDataset
 
 

@@ -1,28 +1,62 @@
+"""
+
+TODO:
+* Implement Unified FCN
+* Implement Temporal Module
+* Update documentation
+
+"""
+
 from typing import Any, List
 
 import torch
+from torch import nn
 from pytorch_lightning import LightningModule
+from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 
-class MNISTLitModule(LightningModule):
-    """Example of LightningModule for MNIST classification.
+class UnifiedFCNModule(nn.Module):
+    '''Class implements fully convolutional network for extracting spatial features from the video frames.
 
-    A LightningModule organizes your PyTorch code into 5 sections:
-        - Computations (init).
-        - Train loop (training_step)
-        - Validation loop (validation_step)
-        - Test loop (test_step)
-        - Optimizers (configure_optimizers)
+    Args: TBD
+    '''
+    def __init__(self, net: str, num_cpts: int, obj_classes: int, verb_classes: int, batchnorm: bool = True):
+        super(UnifiedFCNModule, self).__init__()
+        self.net = self._select_network(net)
 
-    Read the docs:
-        https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
-    """
+
+    def _select_network(self, net_opt:str) -> nn.Module:
+        net: nn.Module = None
+        if net_opt == "convnext_tiny":
+            net = convnext_tiny(weights=ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
+        else:
+            print("NN model not found. Change the feature extractor network.")
+
+        return net
+
+    def forward(self, x: torch.Tensor):
+        g = self.net(x)
+        # h_grid = g[...,]
+
+class TemporalModule(nn.Module):
+    """docstring for TemporalModule"""
+    def __init__(self, arg):
+        super(TemporalModule, self).__init__()
+        self.arg = arg
+        
+
+class UnifiedHOModule(LightningModule):
+    ''' This class implements the spatio-temporal model used for unified representation of hands and interacting objects in the scene. This model also performs the activity recognition for the given frame sequence.
+
+    Args: TBD
+    '''
 
     def __init__(
         self,
-        net: torch.nn.Module,
+        fcn: torch.nn.Module,
+        temporal: torch.nn.Module,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
     ):
@@ -32,7 +66,8 @@ class MNISTLitModule(LightningModule):
         # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.net = net
+        self.fcn = fcn
+        self.temporal = temporal
 
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -47,7 +82,7 @@ class MNISTLitModule(LightningModule):
         self.val_acc_best = MaxMetric()
 
     def forward(self, x: torch.Tensor):
-        return self.net(x)
+        return self.fcn(x)
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,

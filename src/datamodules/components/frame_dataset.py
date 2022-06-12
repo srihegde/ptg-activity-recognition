@@ -81,9 +81,7 @@ class H2OFrameDataset(torch.utils.data.Dataset):
         return len(self.frame_list)
 
     def __getitem__(self, idx: int):
-        """For frame with id idx, loads frame with corresponding.
-
-        labels - hand pose, object pose, object label, verb
+        """For frame with id idx, loads frame with corresponding labels - hand pose, object pose, object label, verb
 
         Args:
             idx: Frame sample index.
