@@ -1,56 +1,29 @@
 """
 
 TODO:
-* Implement Unified FCN
+* Select lambda appropriately
+* Implement losses MSE and CE losses
 * Implement Temporal Module
 * Update documentation
 
 """
 
-from typing import Any, List
+from typing import Any, Dict, List
 
 import torch
 from pytorch_lightning import LightningModule
 from torch import nn
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
-from torchvision.models import ConvNeXt_Tiny_Weights, convnext_tiny
-
-
-class UnifiedFCNModule(nn.Module):
-    """Class implements fully convolutional network for extracting spatial features from the video
-    frames.
-
-    Args: TBD
-    """
-
-    def __init__(
-        self, net: str, num_cpts: int, obj_classes: int, verb_classes: int, batchnorm: bool = True
-    ):
-        super(UnifiedFCNModule, self).__init__()
-        self.net = self._select_network(net)
-
-    def _select_network(self, net_opt: str) -> nn.Module:
-        net: nn.Module = None
-        if net_opt == "convnext_tiny":
-            net = convnext_tiny(weights=ConvNeXt_Tiny_Weights.IMAGENET1K_V1)
-        else:
-            print("NN model not found. Change the feature extractor network.")
-
-        return net
-
-    def forward(self, x: torch.Tensor):
-        # g = self.net(x)
-        # h_grid = g[...,]
-        pass
+from torchvision.models import convnext_tiny
+from torchvision.models.feature_extraction import create_feature_extractor
 
 
 class TemporalModule(nn.Module):
     """docstring for TemporalModule."""
 
-    def __init__(self, arg):
+    def __init__(self):
         super(TemporalModule, self).__init__()
-        self.arg = arg
 
 
 class UnifiedHOModule(LightningModule):
@@ -78,7 +51,8 @@ class UnifiedHOModule(LightningModule):
         self.temporal = temporal
 
         # loss function
-        self.criterion = torch.nn.CrossEntropyLoss()
+        self.ce_criterion = torch.nn.CrossEntropyLoss()
+        self.mse_criterion = torch.nn.MSELoss()
 
         # use separate metric instance for train, val and test step
         # to ensure a proper reduction over the epoch
@@ -89,7 +63,7 @@ class UnifiedHOModule(LightningModule):
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: Dict):
         return self.fcn(x)
 
     def on_train_start(self):
@@ -98,10 +72,9 @@ class UnifiedHOModule(LightningModule):
         self.val_acc_best.reset()
 
     def step(self, batch: Any):
-        x, y = batch
-        logits = self.forward(x)
-        loss = self.criterion(logits, y)
-        preds = torch.argmax(logits, dim=1)
+        feats = self.forward(batch)
+        loss = self._compute_grid_loss(feats, batch)
+        preds = torch.argmax(feats, dim=1)
         return loss, preds, y
 
     def training_step(self, batch: Any, batch_idx: int):
@@ -161,14 +134,16 @@ class UnifiedHOModule(LightningModule):
         self.val_acc.reset()
 
     def configure_optimizers(self):
-        """Choose what optimizers and learning-rate schedulers to use in your optimization.
-        Normally you'd need one. But in the case of GANs or similar you might have multiple.
-
-        See examples here:
-            https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
-        """
+        """Choose what optimizers and learning-rate schedulers to use in your optimization."""
         return torch.optim.Adam(
             params=self.parameters(),
             lr=self.hparams.lr,
             weight_decay=self.hparams.weight_decay,
         )
+
+    def _compute_grid_loss(self, feats: torch.Tensor, labels: Dict) -> torch.Tensor:
+        # lh, rh, ol, op, v = data["l_hand"],data["r_hand"],data["obj_label"],data["obj_pose"],data["verb"]
+        # lh, r = convert2grid(lh)
+        # lh_loss =
+        # rh_loss, ol_loss, op_loss, v_loss
+        pass

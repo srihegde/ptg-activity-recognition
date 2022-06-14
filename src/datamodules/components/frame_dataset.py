@@ -2,6 +2,7 @@
 
 TODO:
 * Add transforms functionality
+* Hand pose needs projection code from Opencv
 * Add comments + docs
 
 """
@@ -102,9 +103,9 @@ class H2OFrameDataset(torch.utils.data.Dataset):
 
         return {
             "frm": frm,
-            "l_hand": l_hand,
-            "r_hand": r_hand,
-            "obj_label": obj_label,
-            "obj_pose": obj_pose,
-            "verb": verb,
+            "l_hand": np.array(l_hand),
+            "r_hand": np.array(r_hand),
+            "obj_label": np.array(obj_label),
+            "obj_pose": np.array(obj_pose),
+            "verb": np.array(verb),
         }
