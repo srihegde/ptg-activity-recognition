@@ -1,8 +1,6 @@
 """
 
 TODO:
-* Select lambda appropriately
-* Implement losses MSE and CE losses
 * Implement Temporal Module
 * Update documentation
 
@@ -12,18 +10,8 @@ from typing import Any, Dict, List
 
 import torch
 from pytorch_lightning import LightningModule
-from torch import nn
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
-from torchvision.models import convnext_tiny
-from torchvision.models.feature_extraction import create_feature_extractor
-
-
-class TemporalModule(nn.Module):
-    """docstring for TemporalModule."""
-
-    def __init__(self):
-        super(TemporalModule, self).__init__()
 
 
 class UnifiedHOModule(LightningModule):
@@ -64,7 +52,8 @@ class UnifiedHOModule(LightningModule):
         self.val_acc_best = MaxMetric()
 
     def forward(self, x: Dict):
-        return self.fcn(x)
+        x = self.fcn(x)
+        return x
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
@@ -72,7 +61,8 @@ class UnifiedHOModule(LightningModule):
         self.val_acc_best.reset()
 
     def step(self, batch: Any):
-        feats = self.forward(batch)
+        imgs = batch["frm"]
+        feats = self.forward(imgs)
         loss = self._compute_grid_loss(feats, batch)
         preds = torch.argmax(feats, dim=1)
         return loss, preds, y

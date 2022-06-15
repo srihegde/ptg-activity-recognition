@@ -17,7 +17,7 @@ def conf_func(dist, alpha, dth):
     return mean_conf
 
 
-def corner_confidences(
+def compute_corner_confidence(
     cp_pred_np: np.ndarray,
     obj_pose: np.ndarray,
     l_hand: np.ndarray,
@@ -42,3 +42,7 @@ def corner_confidences(
     conf = 0.5 * (c_uv + c_z)
 
     return conf
+
+
+def convert2grid():
+    pass
