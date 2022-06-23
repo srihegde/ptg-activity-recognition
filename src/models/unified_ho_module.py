@@ -13,6 +13,9 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
+from .components.smoke.config import cfg
+from .components.smoke.modeling.detector import build_detection_model
+
 
 class UnifiedHOModule(LightningModule):
     """This class implements the spatio-temporal model used for unified representation of hands and
@@ -24,7 +27,7 @@ class UnifiedHOModule(LightningModule):
 
     def __init__(
         self,
-        fcn: torch.nn.Module,
+        # fcn: torch.nn.Module,
         temporal: torch.nn.Module,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
@@ -35,7 +38,7 @@ class UnifiedHOModule(LightningModule):
         # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.fcn = fcn
+        self.fcn = build_detection_model(cfg)
         self.temporal = temporal
 
         # loss function
@@ -51,8 +54,8 @@ class UnifiedHOModule(LightningModule):
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
-    def forward(self, x: Dict):
-        x = self.fcn(x)
+    def forward(self, x):
+        x, loss_dict, log_loss_dict = self.fcn(x)
         return x
 
     def on_train_start(self):
@@ -62,10 +65,9 @@ class UnifiedHOModule(LightningModule):
 
     def step(self, batch: Any):
         imgs = batch["frm"]
-        feats = self.forward(imgs)
-        loss = self._compute_grid_loss(feats, batch)
+        feats, loss, log_loss = self.forward(imgs)
         preds = torch.argmax(feats, dim=1)
-        return loss, preds, y
+        return loss, preds
 
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
@@ -130,10 +132,3 @@ class UnifiedHOModule(LightningModule):
             lr=self.hparams.lr,
             weight_decay=self.hparams.weight_decay,
         )
-
-    def _compute_grid_loss(self, feats: torch.Tensor, labels: Dict) -> torch.Tensor:
-        # lh, rh, ol, op, v = data["l_hand"],data["r_hand"],data["obj_label"],data["obj_pose"],data["verb"]
-        # lh, r = convert2grid(lh)
-        # lh_loss =
-        # rh_loss, ol_loss, op_loss, v_loss
-        pass
