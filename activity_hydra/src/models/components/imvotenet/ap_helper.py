@@ -4,6 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 """Helper functions and class to calculate Average Precisions for 3D object
 detection."""
+
 import os
 import sys
 
@@ -24,6 +25,7 @@ from sunrgbd_utils import extract_pc_in_box3d
 def flip_axis_to_camera(pc):
     """Flip X-right,Y-forward,Z-up to X-right,Y-down,Z-forward Input and output
     are both (N,3) array."""
+
     pc2 = np.copy(pc)
     pc2[..., [0, 1, 2]] = pc2[..., [0, 2, 1]]  # cam X,Y,Z = depth X,-Z,Y
     pc2[..., 1] *= -1
@@ -321,6 +323,7 @@ class APCalculator(object):
     def compute_metrics(self):
         """Use accumulated predictions and groundtruths to compute Average
         Precision."""
+
         rec, prec, ap = eval_det_multiprocessing(
             self.pred_map_cls,
             self.gt_map_cls,

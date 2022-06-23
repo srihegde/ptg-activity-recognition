@@ -17,6 +17,7 @@
 
 # from utils.grid_utils import compute_corner_confidence, convert2grid
 
+
 # def _process_batch(data: Tuple):
 #     (
 #         cp_pred_np,
@@ -41,6 +42,7 @@
 #     # confidence mask
 
 #     return conf
+
 
 # class UnifiedFCNModule(nn.Module):
 #     """Class implements fully convolutional network for extracting spatial features from the video
