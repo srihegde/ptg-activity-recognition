@@ -1,0 +1,16 @@
+_target_: src.models.unified_ho_module.UnifiedHOModule
+lr: 0.001
+weight_decay: 0.0005
+
+# fcn:
+#   _target_: src.models.components.unified_fcn.UnifiedFCNModule
+#   net: convnext_tiny
+#   num_cpts: 21
+#   obj_classes: 9
+#   verb_classes: 12
+
+# fcn:
+#   _target_: src.models.components.smoke.
+
+temporal:
+  _target_: src.models.components.temporal.TemporalModule
