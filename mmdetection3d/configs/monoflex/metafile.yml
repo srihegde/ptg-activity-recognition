@@ -10,7 +10,7 @@ Collections:
         - DLA
     Paper:
       URL: https://arxiv.org/abs/2104.02323
-      Title: 'Objects are Different: Flexible Monocular 3D Object Detection'
+      Title: "Objects are Different: Flexible Monocular 3D Object Detection"
     README: configs/monoflex/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/v1.0.0.dev0/mmdet3d/models/detectors/monoflex.py#L7

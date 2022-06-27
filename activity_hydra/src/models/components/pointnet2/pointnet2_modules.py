@@ -165,6 +165,7 @@ class PointnetSAModule(PointnetSAModuleMSG):
 class PointnetSAModuleVotes(nn.Module):
     """Modified based on _PointnetSAModuleBase and PointnetSAModuleMSG with
     extra support for returning point indices for getting their GT votes."""
+
     def __init__(
         self,
         *,

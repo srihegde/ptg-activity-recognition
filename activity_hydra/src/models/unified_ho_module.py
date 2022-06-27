@@ -6,15 +6,13 @@ TODO:
 
 """
 
+import pdb
 from typing import Any, Dict, List
 
 import torch
 from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
-
-from .components.smoke.config import cfg
-from .components.smoke.modeling.detector import build_detection_model
 
 
 class UnifiedHOModule(LightningModule):
@@ -27,7 +25,7 @@ class UnifiedHOModule(LightningModule):
 
     def __init__(
         self,
-        # fcn: torch.nn.Module,
+        fcn: torch.nn.Module,
         temporal: torch.nn.Module,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
@@ -38,12 +36,8 @@ class UnifiedHOModule(LightningModule):
         # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.fcn = build_detection_model(cfg)
+        self.fcn = fcn
         self.temporal = temporal
-
-        # loss function
-        self.ce_criterion = torch.nn.CrossEntropyLoss()
-        self.mse_criterion = torch.nn.MSELoss()
 
         # use separate metric instance for train, val and test step
         # to ensure a proper reduction over the epoch
@@ -54,9 +48,9 @@ class UnifiedHOModule(LightningModule):
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
-    def forward(self, x):
-        x, loss_dict, log_loss_dict = self.fcn(x)
-        return x
+    def forward(self, data):
+        # pdb.set_trace()
+        return self.fcn(data)
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
@@ -64,37 +58,58 @@ class UnifiedHOModule(LightningModule):
         self.val_acc_best.reset()
 
     def step(self, batch: Any):
-        imgs = batch["frm"]
-        feats, loss, log_loss = self.forward(imgs)
-        preds = torch.argmax(feats, dim=1)
+        feats, preds, loss = self.forward(batch)
+
         return loss, preds
 
     def training_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds = self.step(batch)
 
         # log train metrics
-        acc = self.train_acc(preds, targets)
-        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        obj_acc = self.train_acc(preds["obj"], batch["obj_label"])
+        verb_acc = self.train_acc(preds["verb"], batch["verb"])
+        self.log("train/obj_loss", loss["obj_loss"], on_step=False, on_epoch=True, prog_bar=False)
+        self.log("train/obj_acc", obj_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log(
+            "train/verb_loss", loss["verb_loss"], on_step=False, on_epoch=True, prog_bar=False
+        )
+        self.log("train/verb_acc", verb_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
         # remember to always return loss from `training_step()` or else backpropagation will fail!
-        return {"loss": loss, "preds": preds, "targets": targets}
+        return {
+            "obj_loss": loss["obj_loss"],
+            "verb_loss": loss["verb_loss"],
+            "obj_pred": preds["obj"],
+            "verb_pred": preds["verb"],
+            "obj_targets": batch["obj_label"],
+            "verb_targets": batch["verb"],
+        }
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds = self.step(batch)
 
         # log val metrics
-        acc = self.val_acc(preds, targets)
-        self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        obj_acc = self.val_acc(preds["obj"], batch["obj_label"])
+        verb_acc = self.val_acc(preds["verb"], batch["verb"])
+        self.log("val/obj_loss", loss["obj_loss"], on_step=False, on_epoch=True, prog_bar=False)
+        self.log("val/obj_acc", obj_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/verb_loss", loss["verb_loss"], on_step=False, on_epoch=True, prog_bar=False)
+        self.log("val/verb_acc", verb_acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        return {"loss": loss, "preds": preds, "targets": targets}
+        return {
+            "obj_loss": loss["obj_loss"],
+            "verb_loss": loss["verb_loss"],
+            "obj_pred": preds["obj"],
+            "verb_pred": preds["verb"],
+            "obj_targets": batch["obj_label"],
+            "verb_targets": batch["verb"],
+        }
 
     def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
@@ -107,14 +122,24 @@ class UnifiedHOModule(LightningModule):
         )
 
     def test_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds = self.step(batch)
 
-        # log test metrics
-        acc = self.test_acc(preds, targets)
-        self.log("test/loss", loss, on_step=False, on_epoch=True)
-        self.log("test/acc", acc, on_step=False, on_epoch=True)
+        # log val metrics
+        obj_acc = self.test_acc(preds["obj"], batch["obj_label"])
+        verb_acc = self.test_acc(preds["verb"], batch["verb"])
+        self.log("test/obj_loss", loss["obj_loss"], on_step=False, on_epoch=True, prog_bar=False)
+        self.log("test/obj_acc", obj_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("test/verb_loss", loss["verb_loss"], on_step=False, on_epoch=True, prog_bar=False)
+        self.log("test/verb_acc", verb_acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        return {"loss": loss, "preds": preds, "targets": targets}
+        return {
+            "obj_loss": loss["obj_loss"],
+            "verb_loss": loss["verb_loss"],
+            "obj_pred": preds["obj"],
+            "verb_pred": preds["verb"],
+            "obj_targets": batch["obj_label"],
+            "verb_targets": batch["verb"],
+        }
 
     def test_epoch_end(self, outputs: List[Any]):
         pass

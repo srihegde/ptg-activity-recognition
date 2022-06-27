@@ -10,7 +10,7 @@ Collections:
         - DLA
     Paper:
       URL: https://arxiv.org/abs/2002.10111
-      Title: 'SMOKE: Single-Stage Monocular 3D Object Detection via Keypoint Estimation'
+      Title: "SMOKE: Single-Stage Monocular 3D Object Detection via Keypoint Estimation"
     README: configs/smoke/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/v1.0.0.dev0/mmdet3d/models/detectors/smoke_mono3d.py#L7

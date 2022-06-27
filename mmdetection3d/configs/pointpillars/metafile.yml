@@ -7,7 +7,7 @@ Collections:
         - Feature Pyramid Network
     Paper:
       URL: https://arxiv.org/abs/1812.05784
-      Title: 'PointPillars: Fast Encoders for Object Detection from Point Clouds'
+      Title: "PointPillars: Fast Encoders for Object Detection from Point Clouds"
     README: configs/pointpillars/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/master/mmdet3d/models/voxel_encoders/pillar_encoder.py#L13

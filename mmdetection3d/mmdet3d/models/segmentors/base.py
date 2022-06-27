@@ -59,7 +59,7 @@ class Base3DSegmentor(BaseSegmentor):
         Note this setting will change the expected inputs. When
         `return_loss=True`, point and img_metas are single-nested (i.e.
         torch.Tensor and list[dict]), and when `resturn_loss=False`, point and
-        img_metas should be double nested (i.e.  list[torch.Tensor],
+        img_metas should be double nested (i.e. list[torch.Tensor],
         list[list[dict]]), with the outer list indicating test time
         augmentations.
         """

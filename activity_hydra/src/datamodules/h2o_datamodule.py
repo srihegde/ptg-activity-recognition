@@ -8,6 +8,7 @@ TODO:
 
 """
 
+import pdb
 from typing import Dict, Optional
 
 # import torch
@@ -16,6 +17,8 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
 
 from .components.frame_dataset import H2OFrameDataset
+
+# from .components.video_dataset import H2OVideoDataset
 
 
 class H2ODataModule(LightningDataModule):
@@ -40,7 +43,7 @@ class H2ODataModule(LightningDataModule):
         pose_files: Dict,
         action_files: Dict,
         data_dir: str = "data/h2o",
-        data_type: str = "frame",
+        data_type: str = "video",
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -56,7 +59,8 @@ class H2ODataModule(LightningDataModule):
             self.transforms = transforms.Compose(
                 [
                     transforms.ToTensor(),
-                    transforms.Normalize((0.1307,), (0.3081,)),
+                    # transforms.Normalize((0.1307,), (0.3081,))
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                 ]
             )
         elif self.data_type == "video":
@@ -91,6 +95,7 @@ class H2ODataModule(LightningDataModule):
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             if self.data_type == "frame":
+                # pdb.set_trace()
                 self.data_train = H2OFrameDataset(
                     self.hparams.data_dir,
                     self.hparams.pose_files["train_list"],

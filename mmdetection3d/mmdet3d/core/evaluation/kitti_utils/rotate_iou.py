@@ -327,7 +327,7 @@ def rotate_iou_kernel_eval(N, K, dev_boxes, dev_query_boxes, dev_iou, criterion=
 def rotate_iou_gpu_eval(boxes, query_boxes, criterion=-1, device_id=0):
     """Rotated box iou running in gpu. 500x faster than cpu version (take 5ms
     in one example with numba.cuda code). convert from [this project](
-    https://github.com/hongzhenwang/RRPN-revise/tree/master/lib/rotation).
+    https://github.com/hongzhenwang/RRPN- revise/tree/master/lib/rotation).
 
     This function is for bev boxes in camera coordinate system ONLY
     (the rotation is clockwise).

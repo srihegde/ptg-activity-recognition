@@ -11,7 +11,7 @@ Collections:
         - Feature Pyramid Network
     Paper:
       URL: https://arxiv.org/abs/2001.10692
-      Title: 'ImVoteNet: Boosting 3D Object Detection in Point Clouds with Image Votes'
+      Title: "ImVoteNet: Boosting 3D Object Detection in Point Clouds with Image Votes"
     README: configs/imvotenet/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/master/mmdet3d/models/detectors/imvotenet.py#L56

@@ -169,8 +169,8 @@ class Collect3D(object):
         self.meta_keys = meta_keys
 
     def __call__(self, results):
-        """Call function to collect keys in results. The keys in ``meta_keys``
-        will be converted to :obj:`mmcv.DataContainer`.
+        """Call function to collect keys in results. The keys in ``meta_keys`` will be converted to
+        :obj:`mmcv.DataContainer`.
 
         Args:
             results (dict): Result dict contains the data to collect.

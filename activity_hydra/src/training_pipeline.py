@@ -11,7 +11,6 @@ from pytorch_lightning import (
     seed_everything,
 )
 from pytorch_lightning.loggers import LightningLoggerBase
-
 from src import utils
 
 log = utils.get_logger(__name__)

@@ -44,11 +44,11 @@ def register_spconv2():
 
 
 def _save_to_state_dict(self, destination, prefix, keep_vars):
-    """Rewrite this func to compat the convolutional kernel weights between
-    spconv 1.x in MMCV and 2.x in spconv2.x.
+    """Rewrite this func to compat the convolutional kernel weights between spconv 1.x in MMCV and
+    2.x in spconv2.x.
 
-    Kernel weights in MMCV spconv has shape in (D,H,W,in_channel,out_channel) ,
-    while those in spcon2.x is in (out_channel,D,H,W,in_channel).
+    Kernel weights in MMCV spconv has shape in (D,H,W,in_channel,out_channel) , while those
+    in spcon2.x is in (out_channel,D,H,W,in_channel).
     """
     for name, param in self._parameters.items():
         if param is not None:
@@ -65,11 +65,11 @@ def _save_to_state_dict(self, destination, prefix, keep_vars):
 def _load_from_state_dict(
     self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs
 ):
-    """Rewrite this func to compat the convolutional kernel weights between
-    spconv 1.x in MMCV and 2.x in spconv2.x.
+    """Rewrite this func to compat the convolutional kernel weights between spconv 1.x in MMCV and
+    2.x in spconv2.x.
 
-    Kernel weights in MMCV spconv has shape in (D,H,W,in_channel,out_channel) ,
-    while those in spcon2.x is in (out_channel,D,H,W,in_channel).
+    Kernel weights in MMCV spconv has shape in (D,H,W,in_channel,out_channel) , while those
+    in spcon2.x is in (out_channel,D,H,W,in_channel).
     """
     for hook in self._load_state_dict_pre_hooks.values():
         hook(state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs)

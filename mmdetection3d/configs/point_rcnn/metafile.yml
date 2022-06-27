@@ -9,7 +9,7 @@ Collections:
         - PointNet++
     Paper:
       URL: https://arxiv.org/abs/1812.04244
-      Title: 'PointRCNN: 3D Object Proposal Generation and Detection from Point Cloud'
+      Title: "PointRCNN: 3D Object Proposal Generation and Detection from Point Cloud"
     README: configs/point_rcnn/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/v1.0.0.dev0/mmdet3d/models/detectors/point_rcnn.py#L8

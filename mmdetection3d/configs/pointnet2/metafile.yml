@@ -8,7 +8,7 @@ Collections:
         - PointNet++
     Paper:
       URL: https://arxiv.org/abs/1706.02413
-      Title: 'PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space'
+      Title: "PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space"
     README: configs/pointnet2/README.md
     Code:
       URL: https://github.com/open-mmlab/mmdetection3d/blob/master/mmdet3d/models/backbones/pointnet2_sa_ssg.py#L12

@@ -10,8 +10,8 @@ from .compose import Compose
 
 @PIPELINES.register_module()
 class MultiScaleFlipAug:
-    """Test-time augmentation with multiple scales and flipping. An example
-    configuration is as followed:
+    """Test-time augmentation with multiple scales and flipping. An example configuration is as
+    followed:
 
     .. code-block::
         img_scale=[(1333, 400), (1333, 800)],
