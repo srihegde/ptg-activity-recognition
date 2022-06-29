@@ -79,6 +79,7 @@ class UnifiedHOModule(LightningModule):
         # and then read it in some callback or in `training_epoch_end()` below
         # remember to always return loss from `training_step()` or else backpropagation will fail!
         return {
+            "loss": sum([loss[l] for l in loss]),
             "obj_loss": loss["obj_loss"],
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],
@@ -101,8 +102,10 @@ class UnifiedHOModule(LightningModule):
         self.log("val/obj_acc", obj_acc, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/verb_loss", loss["verb_loss"], on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/verb_acc", verb_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/acc", (obj_acc + verb_acc) / 2, on_step=False, on_epoch=True, prog_bar=True)
 
         return {
+            "loss": sum([loss[l] for l in loss]),
             "obj_loss": loss["obj_loss"],
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],
@@ -133,6 +136,7 @@ class UnifiedHOModule(LightningModule):
         self.log("test/verb_acc", verb_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {
+            "loss": sum([loss[l] for l in loss]),
             "obj_loss": loss["obj_loss"],
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],

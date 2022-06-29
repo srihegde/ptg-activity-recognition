@@ -35,9 +35,12 @@ class UnifiedFCNModule(nn.Module):
         self.output_layers = [8]  # 8 -> Avg. pool layer
         self.selected_out = OrderedDict()
         self.net = self._select_network(net)
+        # Freeze network weights
+        for param in self.net.parameters():
+            param.requires_grad = False
+
         self.fhooks = []
         self.fc1 = nn.Linear(2048, self.obj_classes + self.verb_classes)
-
         for i, l in enumerate(list(self.net._modules.keys())):
             if i in self.output_layers:
                 self.fhooks.append(

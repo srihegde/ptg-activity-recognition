@@ -11,8 +11,8 @@ action_files:
   test_list: ${data_dir}/label_split/action_test.txt
 
 data_dir: ${data_dir} # data_dir is specified in test/train yaml file
-data_type: "frame"
+data_type: ${train_mode} # data_type is specified in test/train yaml file
 
 batch_size: 1
-num_workers: 0
+num_workers: 12
 pin_memory: False
