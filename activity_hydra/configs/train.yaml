@@ -55,3 +55,8 @@ seed: null
 # default name for the experiment, determines logging folder path
 # (you can overwrite this name in experiment configs)
 name: "default"
+
+# training mode for stages of the stage-wise training
+# valid training mode options are (frame | video) where "frame" and "video"
+# represent the 1st and 2nd stages of 2-stage training respectively.
+train_mode: "frame"

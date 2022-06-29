@@ -108,4 +108,5 @@ class H2OFrameDataset(torch.utils.data.Dataset):
             "obj_label": np.array(obj_label),
             "obj_pose": np.array(obj_pose),
             "verb": np.array(verb),
+            "fname": self.frame_list[idx],
         }
