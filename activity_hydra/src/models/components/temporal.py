@@ -27,8 +27,7 @@ class TemporalModule(nn.Module):
     def forward(self, data):
         x = data[0]["feats"]
         batch_size = x[0].shape[0]
-        # pdb.set_trace()
-        x = torch.stack(x).squeeze()
+        x = torch.stack(x).squeeze(2)
         x = self.fc1(x)
         x, _ = self.lstm1(x)
 
