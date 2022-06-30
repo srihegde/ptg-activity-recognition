@@ -1,0 +1,90 @@
+[[36m2022-06-29 15:37:31,345[0m][[34msrc.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <config.print_config=True>[0m
+[[36m2022-06-29 15:37:31,346[0m][[34msrc.utils[0m][[32mINFO[0m] - Field 'logger' not found in config[0m
+CONFIG
+├── datamodule
+│   └── _target_: src.datamodules.h2o_datamodule.H2ODataModule                  
+│       pose_files:                                                             
+│         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
+│         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
+│         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
+│       action_files:                                                           
+│         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
+│         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
+│         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
+│       data_dir: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h
+│       data_type: frame                                                        
+│       batch_size: 1                                                           
+│       num_workers: 12                                                         
+│       pin_memory: false                                                       
+│                                                                               
+├── model
+│   └── _target_: src.models.unified_ho_module.UnifiedHOModule                  
+│       lr: 0.001                                                               
+│       weight_decay: 0.0005                                                    
+│       fcn:                                                                    
+│         _target_: src.models.components.unified_fcn.UnifiedFCNModule          
+│         net: resnext                                                          
+│         num_cpts: 21                                                          
+│         obj_classes: 9                                                        
+│         verb_classes: 12                                                      
+│       temporal:                                                               
+│         _target_: src.models.components.temporal.TemporalModule               
+│                                                                               
+├── callbacks
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         monitor: val/acc                                                      
+│         mode: max                                                             
+│         save_top_k: 1                                                         
+│         save_last: true                                                       
+│         verbose: false                                                        
+│         dirpath: checkpoints/                                                 
+│         filename: epoch_{epoch:03d}                                           
+│         auto_insert_metric_name: false                                        
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/acc                                                      
+│         mode: max                                                             
+│         patience: 100                                                         
+│         min_delta: 0                                                          
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       gpus: 4                                                                 
+│       min_epochs: 1                                                           
+│       max_epochs: 10                                                          
+│       resume_from_checkpoint: null                                            
+│       strategy: ddp                                                           
+│                                                                               
+├── original_work_dir
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra                 
+├── data_dir
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h2o        
+├── print_config
+│   └── True                                                                    
+├── ignore_warnings
+│   └── False                                                                   
+├── train
+│   └── True                                                                    
+├── test
+│   └── True                                                                    
+├── seed
+│   └── None                                                                    
+├── name
+│   └── default                                                                 
+└── train_mode
+    └── frame                                                                   
+[[36m2022-06-29 15:37:31,398[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating datamodule <src.datamodules.h2o_datamodule.H2ODataModule>[0m
+[[36m2022-06-29 15:37:31,411[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating model <src.models.unified_ho_module.UnifiedHOModule>[0m
+[[36m2022-06-29 15:37:31,755[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpnk67f_ut[0m
+[[36m2022-06-29 15:37:31,755[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpnk67f_ut/_remote_module_non_sriptable.py[0m
+[[36m2022-06-29 15:37:31,848[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2022-06-29 15:37:31,849[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2022-06-29 15:37:31,850[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2022-06-29 15:37:31,850[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2022-06-29 15:37:31,851[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
