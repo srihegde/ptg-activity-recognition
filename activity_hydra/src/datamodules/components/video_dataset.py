@@ -165,7 +165,6 @@ class H2OVideoDataset(torch.utils.data.Dataset):
     def _sanity_check_samples(self):
         for record in self.video_list:
             if record.num_frames <= 0 or record.start_frame == record.end_frame:
-                pdb.set_trace()
                 print(
                     f"\nDataset Warning: video {record.path} seems to have zero RGB frames on disk!\n"
                 )
@@ -272,6 +271,7 @@ class H2OVideoDataset(torch.utils.data.Dataset):
 
         # from each start_index, load self.frames_per_segment
         # consecutive frames
+        # pdb.set_trace()
         for start_index in frame_start_indices:
             frame_index = int(start_index)
 

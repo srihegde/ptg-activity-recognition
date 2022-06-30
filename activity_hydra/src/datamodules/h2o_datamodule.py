@@ -46,12 +46,14 @@ class H2ODataModule(LightningDataModule):
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
+        frames_per_segment: int = 1
     ):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
         self.data_type = data_type
+        self.frames_per_segment = frames_per_segment
 
         # data transformations
         if self.data_type == "frame":
@@ -120,17 +122,20 @@ class H2ODataModule(LightningDataModule):
                 self.data_train = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["train_list"],
+                    frames_per_segment = self.frames_per_segment,
                     transform=self.transforms,
                 )
                 self.data_val = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["val_list"],
+                    frames_per_segment = self.frames_per_segment,
                     transform=self.transforms,
                     test_mode=True,
                 )
                 self.data_test = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["test_list"],
+                    frames_per_segment = self.frames_per_segment,
                     transform=self.transforms,
                     test_mode=True,
                 )
