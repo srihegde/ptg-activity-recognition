@@ -29,12 +29,14 @@ class UnifiedHOModule(LightningModule):
         temporal: torch.nn.Module,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
+        data_type: str = "frame",
     ):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
         # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
+        self.train_mode = data_type
 
         self.fcn = fcn
         self.temporal = temporal
@@ -50,7 +52,11 @@ class UnifiedHOModule(LightningModule):
 
     def forward(self, data):
         # pdb.set_trace()
-        return self.fcn(data)
+        if self.train_mode == "frame":
+            results = self.fcn(data)
+        elif self.train_mode == "video":
+            results = self.temporal(data)
+        return results
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
@@ -64,6 +70,13 @@ class UnifiedHOModule(LightningModule):
 
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds = self.step(batch)
+
+        if self.train_mode == "video":
+            acc = self.train_acc(preds, batch[1])
+            self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+            return {"loss": loss, "preds": preds, "targets": batch[1]}
 
         # log train metrics
         obj_acc = self.train_acc(preds["obj"], batch["obj_label"])
@@ -94,6 +107,13 @@ class UnifiedHOModule(LightningModule):
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds = self.step(batch)
+
+        if self.train_mode == "video":
+            acc = self.val_acc(preds, batch[1])
+            self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+            return {"loss": loss, "preds": preds, "targets": batch[1]}
 
         # log val metrics
         obj_acc = self.val_acc(preds["obj"], batch["obj_label"])
@@ -126,6 +146,13 @@ class UnifiedHOModule(LightningModule):
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds = self.step(batch)
+
+        if self.train_mode == "video":
+            acc = self.test_acc(preds, batch[1])
+            self.log("test/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log("test/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+
+            return {"loss": loss, "preds": preds, "targets": batch[1]}
 
         # log val metrics
         obj_acc = self.test_acc(preds["obj"], batch["obj_label"])

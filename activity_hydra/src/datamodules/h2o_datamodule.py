@@ -17,8 +17,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
 
 from .components.frame_dataset import H2OFrameDataset
-
-# from .components.video_dataset import H2OVideoDataset
+from .components.video_dataset import H2OVideoDataset
 
 
 class H2ODataModule(LightningDataModule):
@@ -64,7 +63,13 @@ class H2ODataModule(LightningDataModule):
                 ]
             )
         elif self.data_type == "video":
-            self.transforms = None
+            self.transforms = transforms.Compose(
+                [
+                    transforms.ToTensor(),
+                    # transforms.Normalize((0.1307,), (0.3081,))
+                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                ]
+            )
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
@@ -112,10 +117,23 @@ class H2ODataModule(LightningDataModule):
                     transform=self.transforms,
                 )
             elif self.data_type == "video":
-                # self.data_train = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['train_list'], transform=self.transforms)
-                # self.data_val = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['val_list'], transform=self.transforms)
-                # self.data_test = H2OVideoDataset(self.hparams.data_dir, self.hparams.action_files['test_list'], transform=self.transforms)
-                pass
+                self.data_train = H2OVideoDataset(
+                    self.hparams.data_dir,
+                    self.hparams.action_files["train_list"],
+                    transform=self.transforms,
+                )
+                self.data_val = H2OVideoDataset(
+                    self.hparams.data_dir,
+                    self.hparams.action_files["val_list"],
+                    transform=self.transforms,
+                    test_mode=True,
+                )
+                self.data_test = H2OVideoDataset(
+                    self.hparams.data_dir,
+                    self.hparams.action_files["test_list"],
+                    transform=self.transforms,
+                    test_mode=True,
+                )
 
     def train_dataloader(self):
         return DataLoader(
