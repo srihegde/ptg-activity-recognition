@@ -1,0 +1,18 @@
+_target_: src.datamodules.h2o_datamodule.H2ODataModule
+
+pose_files:
+  train_list: ${data_dir}/label_split/pose_train.txt
+  val_list: ${data_dir}/label_split/pose_train.txt
+  test_list: ${data_dir}/label_split/pose_train.txt
+
+action_files:
+  train_list: ${data_dir}/label_split/action_train.txt
+  val_list: ${data_dir}/label_split/action_train.txt
+  test_list: ${data_dir}/label_split/action_train.txt
+
+data_dir: ${data_dir} # data_dir is specified in test/train yaml file
+data_type: ${train_mode} # data_type is specified in test/train yaml file
+
+batch_size: 2
+num_workers: 12
+pin_memory: False
