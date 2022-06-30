@@ -1,5 +1,6 @@
 import dotenv
 import hydra
+import torch.multiprocessing
 from omegaconf import DictConfig
 
 # load environment variables from `.env` file if it exists
@@ -7,7 +8,7 @@ from omegaconf import DictConfig
 dotenv.load_dotenv(override=True)
 
 
-@hydra.main(config_path="configs/", config_name="train.yaml")
+@hydra.main(version_base=None, config_path="configs/", config_name="train.yaml")
 def main(config: DictConfig):
 
     # Imports can be nested inside @hydra.main to optimize tab completion
@@ -23,4 +24,6 @@ def main(config: DictConfig):
 
 
 if __name__ == "__main__":
+    torch.multiprocessing.set_start_method("spawn")
+    torch.multiprocessing.set_sharing_strategy("file_descriptor")
     main()
