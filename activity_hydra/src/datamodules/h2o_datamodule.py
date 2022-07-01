@@ -11,13 +11,31 @@ TODO:
 import pdb
 from typing import Dict, Optional
 
-# import torch
 from pytorch_lightning import LightningDataModule
+from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
 
 from .components.frame_dataset import H2OFrameDataset
 from .components.video_dataset import H2OVideoDataset
+
+
+def collate_fn_pad(batch):
+    """Padds batch of variable length.
+
+    note: it converts things ToTensor manually here since the ToTensor transform
+    assume it takes in images rather than arbitrary tensors.
+    """
+    ## get sequence lengths
+    # pdb.set_trace()
+    lengths = torch.tensor([len(t[0]["feats"]) for t in batch]).to(device)
+    ## padd
+    for t in batch:
+        for k in t[0]:
+            feats = [torch.Tensor(t[0][k]).to(device) for t in batch]
+            t[0][k] = torch.nn.utils.rnn.pad_sequence(feats)
+
+    return batch, lengths
 
 
 class H2ODataModule(LightningDataModule):
@@ -46,7 +64,7 @@ class H2ODataModule(LightningDataModule):
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
-        frames_per_segment: int = 1
+        frames_per_segment: int = 1,
     ):
         super().__init__()
 
@@ -102,7 +120,6 @@ class H2ODataModule(LightningDataModule):
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             if self.data_type == "frame":
-                # pdb.set_trace()
                 self.data_train = H2OFrameDataset(
                     self.hparams.data_dir,
                     self.hparams.pose_files["train_list"],
@@ -122,47 +139,83 @@ class H2ODataModule(LightningDataModule):
                 self.data_train = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["train_list"],
-                    frames_per_segment = self.frames_per_segment,
+                    frames_per_segment=self.frames_per_segment,
                     transform=self.transforms,
                 )
                 self.data_val = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["val_list"],
-                    frames_per_segment = self.frames_per_segment,
+                    frames_per_segment=self.frames_per_segment,
                     transform=self.transforms,
                     test_mode=True,
                 )
                 self.data_test = H2OVideoDataset(
                     self.hparams.data_dir,
                     self.hparams.action_files["test_list"],
-                    frames_per_segment = self.frames_per_segment,
+                    frames_per_segment=self.frames_per_segment,
                     transform=self.transforms,
                     test_mode=True,
                 )
 
     def train_dataloader(self):
-        return DataLoader(
-            dataset=self.data_train,
-            batch_size=self.hparams.batch_size,
-            num_workers=self.hparams.num_workers,
-            pin_memory=self.hparams.pin_memory,
-            shuffle=True,
-        )
+        if self.data_type == "video":
+            dataloader = DataLoader(
+                dataset=self.data_train,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=True,
+                collate_fn=collate_fn_pad,
+            )
+        else:
+            dataloader = DataLoader(
+                dataset=self.data_train,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=True,
+            )
+
+        return dataloader
 
     def val_dataloader(self):
-        return DataLoader(
-            dataset=self.data_val,
-            batch_size=self.hparams.batch_size,
-            num_workers=self.hparams.num_workers,
-            pin_memory=self.hparams.pin_memory,
-            shuffle=False,
-        )
+        if self.data_type == "video":
+            dataloader = DataLoader(
+                dataset=self.data_val,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=False,
+                collate_fn=collate_fn_pad,
+            )
+        else:
+            dataloader = DataLoader(
+                dataset=self.data_val,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=True,
+            )
+
+        return dataloader
 
     def test_dataloader(self):
-        return DataLoader(
-            dataset=self.data_test,
-            batch_size=self.hparams.batch_size,
-            num_workers=self.hparams.num_workers,
-            pin_memory=self.hparams.pin_memory,
-            shuffle=False,
-        )
+        if self.data_type == "video":
+            dataloader = DataLoader(
+                dataset=self.data_test,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=False,
+                collate_fn=collate_fn_pad,
+            )
+        else:
+            dataloader = DataLoader(
+                dataset=self.data_test,
+                batch_size=self.hparams.batch_size,
+                num_workers=self.hparams.num_workers,
+                pin_memory=self.hparams.pin_memory,
+                shuffle=True,
+            )
+
+        return dataloader

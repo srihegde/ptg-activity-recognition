@@ -237,10 +237,9 @@ class H2OVideoDataset(torch.utils.data.Dataset):
             3) or anything else if a custom transform is used.
         """
         record: VideoRecord = self.video_list[idx]
+        # frame_start_indices: "np.ndarray[int]" = self._get_start_indices(record)
 
-        frame_start_indices: "np.ndarray[int]" = self._get_start_indices(record)
-
-        return self._get(record, frame_start_indices)
+        return self._get(record, None)
 
     def _get(
         self, record: VideoRecord, frame_start_indices: "np.ndarray[int]"
@@ -265,9 +264,23 @@ class H2OVideoDataset(torch.utils.data.Dataset):
             if the transform "ImglistToTensor" is used
             3) or anything else if a custom transform is used.
         """
+        data = {}
+        if frame_start_indices == None:
+            for idx in range(record.start_frame, record.end_frame + 1):
+                sample_data = self._load_feats(record.feat_path, idx)
+                sample_data["frm"] = self._load_image(record.path, idx)
+                if self.transform is not None:
+                    sample_data["frm"] = self.transform(sample_data["frm"])
+
+                for k in sample_data:
+                    if k not in data:
+                        data[k] = [sample_data[k]]
+                    else:
+                        data[k].append(sample_data[k])
+
+            return data, record.label
 
         frame_start_indices = frame_start_indices + record.start_frame
-        data = {}
 
         # from each start_index, load self.frames_per_segment
         # consecutive frames

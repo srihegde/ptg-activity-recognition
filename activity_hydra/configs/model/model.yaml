@@ -1,6 +1,6 @@
 _target_: src.models.unified_ho_module.UnifiedHOModule
 lr: 0.001
-weight_decay: 0.0005
+weight_decay: 0
 data_type: ${train_mode} # data_type is specified in test/train yaml file
 
 fcn:
@@ -14,5 +14,5 @@ temporal:
   _target_: src.models.components.temporal.TemporalModule
   act_classes: 37
   n_hidden: 128
-  n_layers: 1
+  n_layers: 6
   drop_prob: 0.5

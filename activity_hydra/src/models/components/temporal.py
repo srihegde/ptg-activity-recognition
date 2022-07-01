@@ -2,6 +2,7 @@ import pdb
 
 import torch
 from torch import nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
 class TemporalModule(nn.Module):
@@ -26,10 +27,13 @@ class TemporalModule(nn.Module):
 
     def forward(self, data):
         x = data[0]["feats"]
+        pdb.set_trace()
         batch_size = x[0].shape[0]
         x = torch.stack(x).squeeze(2)
         x = self.fc1(x)
-        x, _ = self.lstm1(x)
+        packed_input = pack_padded_sequence(x, text_len, batch_first=False, enforce_sorted=False)
+        packed_output, _ = self.lstm1(packed_input)
+        x, _ = pad_packed_sequence(packed_output, batch_first=True)
 
         x = x.contiguous().view(-1, self.n_hidden)
         x = self.fc2(x)
@@ -38,16 +42,3 @@ class TemporalModule(nn.Module):
         loss = self.loss(out, data[1])
 
         return out, pred, loss
-
-    def init_hidden(self, batch_size):
-        """Initializes hidden state."""
-        # Create a new tensors with sizes n_layers x batch_size x n_hidden,
-        # initialized to zero, for hidden state and cell state of LSTM
-        weight = next(self.parameters()).data
-
-        if train_on_gpu:
-            hidden = weight.new(self.n_layers, batch_size, self.n_hidden).zero_().cuda()
-        else:
-            hidden = weight.new(self.n_layers, batch_size, self.n_hidden).zero_()
-
-        return hidden
