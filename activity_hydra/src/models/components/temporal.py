@@ -27,11 +27,13 @@ class TemporalModule(nn.Module):
 
     def forward(self, data):
         x = data[0]["feats"]
-        pdb.set_trace()
-        batch_size = x[0].shape[0]
-        x = torch.stack(x).squeeze(2)
+        batch_size = x.shape[1]
+        # x = torch.stack(x).squeeze(2)
         x = self.fc1(x)
-        packed_input = pack_padded_sequence(x, text_len, batch_first=False, enforce_sorted=False)
+        # pdb.set_trace()
+        packed_input = pack_padded_sequence(
+            x, data[1].tolist(), batch_first=False, enforce_sorted=False
+        )
         packed_output, _ = self.lstm1(packed_input)
         x, _ = pad_packed_sequence(packed_output, batch_first=True)
 
@@ -39,6 +41,6 @@ class TemporalModule(nn.Module):
         x = self.fc2(x)
         out = x.view(batch_size, -1, self.act_classes)[:, -1, :]
         pred = torch.argmax(out, dim=1)
-        loss = self.loss(out, data[1])
+        loss = self.loss(out, data[0]["act"].long())
 
         return out, pred, loss

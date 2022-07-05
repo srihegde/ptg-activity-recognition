@@ -11,6 +11,7 @@ TODO:
 import pdb
 from typing import Dict, Optional
 
+import torch
 from pytorch_lightning import LightningDataModule
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
@@ -28,13 +29,14 @@ def collate_fn_pad(batch):
     """
     ## get sequence lengths
     # pdb.set_trace()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     lengths = torch.tensor([len(t[0]["feats"]) for t in batch]).to(device)
     ## padd
-    for t in batch:
-        for k in t[0]:
-            feats = [torch.Tensor(t[0][k]).to(device) for t in batch]
-            t[0][k] = torch.nn.utils.rnn.pad_sequence(feats)
-
+    data_dic = {}
+    feats = [torch.cat(t[0]["feats"]).to(device) for t in batch]
+    data_dic["feats"] = torch.nn.utils.rnn.pad_sequence(feats)
+    data_dic["act"] = torch.Tensor([t[1] for t in batch]).to(device)
+    batch = data_dic
     return batch, lengths
 
 

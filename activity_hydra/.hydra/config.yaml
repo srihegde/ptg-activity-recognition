@@ -20,7 +20,7 @@ datamodule:
   data_dir: ${data_dir}
   data_type: ${train_mode}
   batch_size: 8
-  num_workers: 4
+  num_workers: 0
   pin_memory: false
   frames_per_segment: 6
 model:
