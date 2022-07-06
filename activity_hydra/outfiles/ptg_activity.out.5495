@@ -1,0 +1,330 @@
+[[36m2022-07-05 21:55:14,233[0m][[34msrc.utils[0m][[32mINFO[0m] - Disabling python warnings! <config.ignore_warnings=True>[0m
+[[36m2022-07-05 21:55:14,233[0m][[34msrc.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <config.print_config=True>[0m
+CONFIG
+├── datamodule
+│   └── _target_: src.datamodules.h2o_datamodule.H2ODataModule
+│       pose_files:
+│         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
+│         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
+│         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
+│       action_files:
+│         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
+│         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
+│         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
+│       data_dir: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h
+│       data_type: video
+│       batch_size: 8
+│       num_workers: 0
+│       pin_memory: false
+│       frames_per_segment: 6
+│
+├── model
+│   └── _target_: src.models.unified_ho_module.UnifiedHOModule
+│       lr: 0.05
+│       weight_decay: 0
+│       data_type: video
+│       fcn:
+│         _target_: src.models.components.unified_fcn.UnifiedFCNModule
+│         net: resnext
+│         num_cpts: 21
+│         obj_classes: 9
+│         verb_classes: 12
+│       temporal:
+│         _target_: src.models.components.temporal.TemporalModule
+│         act_classes: 37
+│         n_hidden: 128
+│         n_layers: 3
+│         drop_prob: 0.5
+│
+├── callbacks
+│   └── model_checkpoint:
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint
+│         monitor: val/acc
+│         mode: max
+│         save_top_k: 1
+│         save_last: true
+│         verbose: false
+│         dirpath: checkpoints/
+│         filename: epoch_{epoch:03d}
+│         auto_insert_metric_name: false
+│       early_stopping:
+│         _target_: pytorch_lightning.callbacks.EarlyStopping
+│         monitor: val/acc
+│         mode: max
+│         patience: 100
+│         min_delta: 0
+│       model_summary:
+│         _target_: pytorch_lightning.callbacks.RichModelSummary
+│         max_depth: -1
+│       rich_progress_bar:
+│         _target_: pytorch_lightning.callbacks.RichProgressBar
+│
+├── logger
+│   └── tensorboard:
+│         _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
+│         save_dir: tensorboard/
+│         name: null
+│         version: default
+│         log_graph: false
+│         default_hp_metric: true
+│         prefix: ''
+│
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer
+│       gpus: 2
+│       min_epochs: 1
+│       max_epochs: 25
+│       resume_from_checkpoint: null
+│       strategy: ddp
+│
+├── original_work_dir
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra
+├── data_dir
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h2o
+├── print_config
+│   └── True
+├── ignore_warnings
+│   └── True
+├── train
+│   └── True
+├── test
+│   └── True
+├── seed
+│   └── 25
+├── name
+│   └── default
+└── train_mode
+    └── video
+[[36m2022-07-05 21:55:14,318[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-05 21:55:14,340[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating datamodule <src.datamodules.h2o_datamodule.H2ODataModule>[0m
+[[36m2022-07-05 21:55:14,383[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating model <src.models.unified_ho_module.UnifiedHOModule>[0m
+[[36m2022-07-05 21:55:14,748[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpk51rsaz2[0m
+[[36m2022-07-05 21:55:14,748[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpk51rsaz2/_remote_module_non_sriptable.py[0m
+[[36m2022-07-05 21:55:14,787[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2022-07-05 21:55:14,788[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2022-07-05 21:55:14,789[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2022-07-05 21:55:14,790[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2022-07-05 21:55:14,790[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.tensorboard.TensorBoardLogger>[0m
+[[36m2022-07-05 21:55:14,791[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
+[[36m2022-07-05 21:55:14,829[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.[0m
+[[36m2022-07-05 21:55:14,829[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - GPU available: True, used: True[0m
+[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - TPU available: False, using: 0 TPU cores[0m
+[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - IPU available: False, using: 0 IPUs[0m
+[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - HPU available: False, using: 0 HPUs[0m
+[[36m2022-07-05 21:55:14,830[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Logging hyperparameters![0m
+[[36m2022-07-05 21:55:15,724[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Starting training![0m
+[[36m2022-07-05 21:55:17,045[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-05 21:55:17,398[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmp5sr_jg_t[0m
+[[36m2022-07-05 21:55:17,421[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmp5sr_jg_t/_remote_module_non_sriptable.py[0m
+[[36m2022-07-05 21:55:17,616[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-05 21:55:17,617[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/2[0m
+[[36m2022-07-05 21:55:20,352[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-05 21:55:20,354[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/2[0m
+[[36m2022-07-05 21:55:20,619[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 1[0m
+[[36m2022-07-05 21:55:20,624[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 0[0m
+[[36m2022-07-05 21:55:20,625[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
+[[36m2022-07-05 21:55:20,625[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - ----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 2 processes
+----------------------------------------------------------------------------------------------------
+[0m
+[[36m2022-07-05 21:55:20,630[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
+[[36m2022-07-05 21:55:23,697[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1][0m
+[[36m2022-07-05 21:55:23,697[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1][0m
+┏━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
+┃     ┃ Name                          ┃ Type              ┃ Params ┃
+┡━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
+│ 0   │ fcn                           │ UnifiedFCNModule  │ 25.1 M │
+│ 1   │ fcn.net                       │ ResNet            │ 25.0 M │
+│ 2   │ fcn.net.conv1                 │ Conv2d            │  9.4 K │
+│ 3   │ fcn.net.bn1                   │ BatchNorm2d       │    128 │
+│ 4   │ fcn.net.relu                  │ ReLU              │      0 │
+│ 5   │ fcn.net.maxpool               │ MaxPool2d         │      0 │
+│ 6   │ fcn.net.layer1                │ Sequential        │  205 K │
+│ 7   │ fcn.net.layer1.0              │ Bottleneck        │ 63.5 K │
+│ 8   │ fcn.net.layer1.0.conv1        │ Conv2d            │  8.2 K │
+│ 9   │ fcn.net.layer1.0.bn1          │ BatchNorm2d       │    256 │
+│ 10  │ fcn.net.layer1.0.conv2        │ Conv2d            │  4.6 K │
+│ 11  │ fcn.net.layer1.0.bn2          │ BatchNorm2d       │    256 │
+│ 12  │ fcn.net.layer1.0.conv3        │ Conv2d            │ 32.8 K │
+│ 13  │ fcn.net.layer1.0.bn3          │ BatchNorm2d       │    512 │
+│ 14  │ fcn.net.layer1.0.relu         │ ReLU              │      0 │
+│ 15  │ fcn.net.layer1.0.downsample   │ Sequential        │ 16.9 K │
+│ 16  │ fcn.net.layer1.0.downsample.0 │ Conv2d            │ 16.4 K │
+│ 17  │ fcn.net.layer1.0.downsample.1 │ BatchNorm2d       │    512 │
+│ 18  │ fcn.net.layer1.1              │ Bottleneck        │ 71.2 K │
+│ 19  │ fcn.net.layer1.1.conv1        │ Conv2d            │ 32.8 K │
+│ 20  │ fcn.net.layer1.1.bn1          │ BatchNorm2d       │    256 │
+│ 21  │ fcn.net.layer1.1.conv2        │ Conv2d            │  4.6 K │
+│ 22  │ fcn.net.layer1.1.bn2          │ BatchNorm2d       │    256 │
+│ 23  │ fcn.net.layer1.1.conv3        │ Conv2d            │ 32.8 K │
+│ 24  │ fcn.net.layer1.1.bn3          │ BatchNorm2d       │    512 │
+│ 25  │ fcn.net.layer1.1.relu         │ ReLU              │      0 │
+│ 26  │ fcn.net.layer1.2              │ Bottleneck        │ 71.2 K │
+│ 27  │ fcn.net.layer1.2.conv1        │ Conv2d            │ 32.8 K │
+│ 28  │ fcn.net.layer1.2.bn1          │ BatchNorm2d       │    256 │
+│ 29  │ fcn.net.layer1.2.conv2        │ Conv2d            │  4.6 K │
+│ 30  │ fcn.net.layer1.2.bn2          │ BatchNorm2d       │    256 │
+│ 31  │ fcn.net.layer1.2.conv3        │ Conv2d            │ 32.8 K │
+│ 32  │ fcn.net.layer1.2.bn3          │ BatchNorm2d       │    512 │
+│ 33  │ fcn.net.layer1.2.relu         │ ReLU              │      0 │
+│ 34  │ fcn.net.layer2                │ Sequential        │  1.2 M │
+│ 35  │ fcn.net.layer2.0              │ Bottleneck        │  349 K │
+│ 36  │ fcn.net.layer2.0.conv1        │ Conv2d            │ 65.5 K │
+│ 37  │ fcn.net.layer2.0.bn1          │ BatchNorm2d       │    512 │
+│ 38  │ fcn.net.layer2.0.conv2        │ Conv2d            │ 18.4 K │
+│ 39  │ fcn.net.layer2.0.bn2          │ BatchNorm2d       │    512 │
+│ 40  │ fcn.net.layer2.0.conv3        │ Conv2d            │  131 K │
+│ 41  │ fcn.net.layer2.0.bn3          │ BatchNorm2d       │  1.0 K │
+│ 42  │ fcn.net.layer2.0.relu         │ ReLU              │      0 │
+│ 43  │ fcn.net.layer2.0.downsample   │ Sequential        │  132 K │
+│ 44  │ fcn.net.layer2.0.downsample.0 │ Conv2d            │  131 K │
+│ 45  │ fcn.net.layer2.0.downsample.1 │ BatchNorm2d       │  1.0 K │
+│ 46  │ fcn.net.layer2.1              │ Bottleneck        │  282 K │
+│ 47  │ fcn.net.layer2.1.conv1        │ Conv2d            │  131 K │
+│ 48  │ fcn.net.layer2.1.bn1          │ BatchNorm2d       │    512 │
+│ 49  │ fcn.net.layer2.1.conv2        │ Conv2d            │ 18.4 K │
+│ 50  │ fcn.net.layer2.1.bn2          │ BatchNorm2d       │    512 │
+│ 51  │ fcn.net.layer2.1.conv3        │ Conv2d            │  131 K │
+│ 52  │ fcn.net.layer2.1.bn3          │ BatchNorm2d       │  1.0 K │
+│ 53  │ fcn.net.layer2.1.relu         │ ReLU              │      0 │
+│ 54  │ fcn.net.layer2.2              │ Bottleneck        │  282 K │
+│ 55  │ fcn.net.layer2.2.conv1        │ Conv2d            │  131 K │
+│ 56  │ fcn.net.layer2.2.bn1          │ BatchNorm2d       │    512 │
+│ 57  │ fcn.net.layer2.2.conv2        │ Conv2d            │ 18.4 K │
+│ 58  │ fcn.net.layer2.2.bn2          │ BatchNorm2d       │    512 │
+│ 59  │ fcn.net.layer2.2.conv3        │ Conv2d            │  131 K │
+│ 60  │ fcn.net.layer2.2.bn3          │ BatchNorm2d       │  1.0 K │
+│ 61  │ fcn.net.layer2.2.relu         │ ReLU              │      0 │
+│ 62  │ fcn.net.layer2.3              │ Bottleneck        │  282 K │
+│ 63  │ fcn.net.layer2.3.conv1        │ Conv2d            │  131 K │
+│ 64  │ fcn.net.layer2.3.bn1          │ BatchNorm2d       │    512 │
+│ 65  │ fcn.net.layer2.3.conv2        │ Conv2d            │ 18.4 K │
+│ 66  │ fcn.net.layer2.3.bn2          │ BatchNorm2d       │    512 │
+│ 67  │ fcn.net.layer2.3.conv3        │ Conv2d            │  131 K │
+│ 68  │ fcn.net.layer2.3.bn3          │ BatchNorm2d       │  1.0 K │
+│ 69  │ fcn.net.layer2.3.relu         │ ReLU              │      0 │
+│ 70  │ fcn.net.layer3                │ Sequential        │  7.0 M │
+│ 71  │ fcn.net.layer3.0              │ Bottleneck        │  1.4 M │
+│ 72  │ fcn.net.layer3.0.conv1        │ Conv2d            │  262 K │
+│ 73  │ fcn.net.layer3.0.bn1          │ BatchNorm2d       │  1.0 K │
+│ 74  │ fcn.net.layer3.0.conv2        │ Conv2d            │ 73.7 K │
+│ 75  │ fcn.net.layer3.0.bn2          │ BatchNorm2d       │  1.0 K │
+│ 76  │ fcn.net.layer3.0.conv3        │ Conv2d            │  524 K │
+│ 77  │ fcn.net.layer3.0.bn3          │ BatchNorm2d       │  2.0 K │
+│ 78  │ fcn.net.layer3.0.relu         │ ReLU              │      0 │
+│ 79  │ fcn.net.layer3.0.downsample   │ Sequential        │  526 K │
+│ 80  │ fcn.net.layer3.0.downsample.0 │ Conv2d            │  524 K │
+│ 81  │ fcn.net.layer3.0.downsample.1 │ BatchNorm2d       │  2.0 K │
+│ 82  │ fcn.net.layer3.1              │ Bottleneck        │  1.1 M │
+│ 83  │ fcn.net.layer3.1.conv1        │ Conv2d            │  524 K │
+│ 84  │ fcn.net.layer3.1.bn1          │ BatchNorm2d       │  1.0 K │
+│ 85  │ fcn.net.layer3.1.conv2        │ Conv2d            │ 73.7 K │
+│ 86  │ fcn.net.layer3.1.bn2          │ BatchNorm2d       │  1.0 K │
+│ 87  │ fcn.net.layer3.1.conv3        │ Conv2d            │  524 K │
+│ 88  │ fcn.net.layer3.1.bn3          │ BatchNorm2d       │  2.0 K │
+│ 89  │ fcn.net.layer3.1.relu         │ ReLU              │      0 │
+│ 90  │ fcn.net.layer3.2              │ Bottleneck        │  1.1 M │
+│ 91  │ fcn.net.layer3.2.conv1        │ Conv2d            │  524 K │
+│ 92  │ fcn.net.layer3.2.bn1          │ BatchNorm2d       │  1.0 K │
+│ 93  │ fcn.net.layer3.2.conv2        │ Conv2d            │ 73.7 K │
+│ 94  │ fcn.net.layer3.2.bn2          │ BatchNorm2d       │  1.0 K │
+│ 95  │ fcn.net.layer3.2.conv3        │ Conv2d            │  524 K │
+│ 96  │ fcn.net.layer3.2.bn3          │ BatchNorm2d       │  2.0 K │
+│ 97  │ fcn.net.layer3.2.relu         │ ReLU              │      0 │
+│ 98  │ fcn.net.layer3.3              │ Bottleneck        │  1.1 M │
+│ 99  │ fcn.net.layer3.3.conv1        │ Conv2d            │  524 K │
+│ 100 │ fcn.net.layer3.3.bn1          │ BatchNorm2d       │  1.0 K │
+│ 101 │ fcn.net.layer3.3.conv2        │ Conv2d            │ 73.7 K │
+│ 102 │ fcn.net.layer3.3.bn2          │ BatchNorm2d       │  1.0 K │
+│ 103 │ fcn.net.layer3.3.conv3        │ Conv2d            │  524 K │
+│ 104 │ fcn.net.layer3.3.bn3          │ BatchNorm2d       │  2.0 K │
+│ 105 │ fcn.net.layer3.3.relu         │ ReLU              │      0 │
+│ 106 │ fcn.net.layer3.4              │ Bottleneck        │  1.1 M │
+│ 107 │ fcn.net.layer3.4.conv1        │ Conv2d            │  524 K │
+│ 108 │ fcn.net.layer3.4.bn1          │ BatchNorm2d       │  1.0 K │
+│ 109 │ fcn.net.layer3.4.conv2        │ Conv2d            │ 73.7 K │
+│ 110 │ fcn.net.layer3.4.bn2          │ BatchNorm2d       │  1.0 K │
+│ 111 │ fcn.net.layer3.4.conv3        │ Conv2d            │  524 K │
+│ 112 │ fcn.net.layer3.4.bn3          │ BatchNorm2d       │  2.0 K │
+│ 113 │ fcn.net.layer3.4.relu         │ ReLU              │      0 │
+│ 114 │ fcn.net.layer3.5              │ Bottleneck        │  1.1 M │
+│ 115 │ fcn.net.layer3.5.conv1        │ Conv2d            │  524 K │
+│ 116 │ fcn.net.layer3.5.bn1          │ BatchNorm2d       │  1.0 K │
+│ 117 │ fcn.net.layer3.5.conv2        │ Conv2d            │ 73.7 K │
+│ 118 │ fcn.net.layer3.5.bn2          │ BatchNorm2d       │  1.0 K │
+│ 119 │ fcn.net.layer3.5.conv3        │ Conv2d            │  524 K │
+│ 120 │ fcn.net.layer3.5.bn3          │ BatchNorm2d       │  2.0 K │
+│ 121 │ fcn.net.layer3.5.relu         │ ReLU              │      0 │
+│ 122 │ fcn.net.layer4                │ Sequential        │ 14.5 M │
+│ 123 │ fcn.net.layer4.0              │ Bottleneck        │  5.6 M │
+│ 124 │ fcn.net.layer4.0.conv1        │ Conv2d            │  1.0 M │
+│ 125 │ fcn.net.layer4.0.bn1          │ BatchNorm2d       │  2.0 K │
+│ 126 │ fcn.net.layer4.0.conv2        │ Conv2d            │  294 K │
+│ 127 │ fcn.net.layer4.0.bn2          │ BatchNorm2d       │  2.0 K │
+│ 128 │ fcn.net.layer4.0.conv3        │ Conv2d            │  2.1 M │
+│ 129 │ fcn.net.layer4.0.bn3          │ BatchNorm2d       │  4.1 K │
+│ 130 │ fcn.net.layer4.0.relu         │ ReLU              │      0 │
+│ 131 │ fcn.net.layer4.0.downsample   │ Sequential        │  2.1 M │
+│ 132 │ fcn.net.layer4.0.downsample.0 │ Conv2d            │  2.1 M │
+│ 133 │ fcn.net.layer4.0.downsample.1 │ BatchNorm2d       │  4.1 K │
+│ 134 │ fcn.net.layer4.1              │ Bottleneck        │  4.5 M │
+│ 135 │ fcn.net.layer4.1.conv1        │ Conv2d            │  2.1 M │
+│ 136 │ fcn.net.layer4.1.bn1          │ BatchNorm2d       │  2.0 K │
+│ 137 │ fcn.net.layer4.1.conv2        │ Conv2d            │  294 K │
+│ 138 │ fcn.net.layer4.1.bn2          │ BatchNorm2d       │  2.0 K │
+│ 139 │ fcn.net.layer4.1.conv3        │ Conv2d            │  2.1 M │
+│ 140 │ fcn.net.layer4.1.bn3          │ BatchNorm2d       │  4.1 K │
+│ 141 │ fcn.net.layer4.1.relu         │ ReLU              │      0 │
+│ 142 │ fcn.net.layer4.2              │ Bottleneck        │  4.5 M │
+│ 143 │ fcn.net.layer4.2.conv1        │ Conv2d            │  2.1 M │
+│ 144 │ fcn.net.layer4.2.bn1          │ BatchNorm2d       │  2.0 K │
+│ 145 │ fcn.net.layer4.2.conv2        │ Conv2d            │  294 K │
+│ 146 │ fcn.net.layer4.2.bn2          │ BatchNorm2d       │  2.0 K │
+│ 147 │ fcn.net.layer4.2.conv3        │ Conv2d            │  2.1 M │
+│ 148 │ fcn.net.layer4.2.bn3          │ BatchNorm2d       │  4.1 K │
+│ 149 │ fcn.net.layer4.2.relu         │ ReLU              │      0 │
+│ 150 │ fcn.net.avgpool               │ AdaptiveAvgPool2d │      0 │
+│ 151 │ fcn.net.fc                    │ Linear            │  2.0 M │
+│ 152 │ fcn.fc1                       │ Linear            │ 43.0 K │
+│ 153 │ fcn.oclass_loss               │ CrossEntropyLoss  │      0 │
+│ 154 │ fcn.vclass_loss               │ CrossEntropyLoss  │      0 │
+│ 155 │ temporal                      │ TemporalModule    │  1.1 M │
+│ 156 │ temporal.fc1                  │ Linear            │  262 K │
+│ 157 │ temporal.fc_h                 │ Linear            │ 16.3 K │
+│ 158 │ temporal.fc2                  │ Linear            │  4.8 K │
+│ 159 │ temporal.lstm1                │ LSTM              │  461 K │
+│ 160 │ temporal.lstm2                │ LSTM              │  396 K │
+│ 161 │ temporal.dropout              │ Dropout           │      0 │
+│ 162 │ temporal.loss                 │ CrossEntropyLoss  │      0 │
+│ 163 │ train_acc                     │ Accuracy          │      0 │
+│ 164 │ val_acc                       │ Accuracy          │      0 │
+│ 165 │ test_acc                      │ Accuracy          │      0 │
+│ 166 │ val_acc_best                  │ MaxMetric         │      0 │
+└─────┴───────────────────────────────┴───────────────────┴────────┘
+Trainable params: 1.2 M
+Non-trainable params: 25.0 M
+Total params: 26.2 M
+Total estimated model params size (MB): 104
+[[36m2022-07-06 08:59:48,193[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+Epoch 24  ━━━━━━━━━━━━━━━━━━ 44/44 0:27:05 • 0:00:00 0.05it/s loss: 3.5 v_num:
+                                                              ault val/acc:
+                                                              0.072
+                                                              val/acc_best:
+                                                              0.074 train/acc:
+                                                              0.053
+[[36m2022-07-06 08:59:48,911[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Starting testing![0m
+[[36m2022-07-06 08:59:49,261[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-06 08:59:49,397[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Restoring states from the checkpoint path at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m
+[[36m2022-07-06 08:59:50,850[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1][0m
+[[36m2022-07-06 08:59:50,857[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1][0m
+[[36m2022-07-06 08:59:51,137[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Loaded model weights from checkpoint at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         test/acc          │    0.09863375127315521    │
+│         test/loss         │     3.451005697250366     │
+└───────────────────────────┴───────────────────────────┘
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3/3 0:00:23 • 0:00:00 0.09it/s
+[[36m2022-07-06 09:00:56,402[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Finalizing![0m
+[[36m2022-07-06 09:00:56,403[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Best model ckpt at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m

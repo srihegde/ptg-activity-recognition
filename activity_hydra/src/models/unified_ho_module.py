@@ -51,7 +51,6 @@ class UnifiedHOModule(LightningModule):
         self.val_acc_best = MaxMetric()
 
     def forward(self, data):
-        # pdb.set_trace()
         if self.train_mode == "frame":
             results = self.fcn(data)
         elif self.train_mode == "video":
@@ -72,11 +71,11 @@ class UnifiedHOModule(LightningModule):
         loss, preds = self.step(batch)
 
         if self.train_mode == "video":
-            acc = self.train_acc(preds, batch[1])
+            acc = self.train_acc(preds, batch[0]["act"])
             self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
             self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
-            return {"loss": loss, "preds": preds, "targets": batch[1]}
+            return {"loss": loss, "preds": preds, "targets": batch[0]["act"]}
 
         # log train metrics
         obj_acc = self.train_acc(preds["obj"], batch["obj_label"])
@@ -97,23 +96,24 @@ class UnifiedHOModule(LightningModule):
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],
             "verb_pred": preds["verb"],
-            "obj_targets": batch["obj_label"],
-            "verb_targets": batch["verb"],
+            # "obj_targets": batch["obj_label"],
+            # "verb_targets": batch["verb"],
         }
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
+        # pdb.set_trace()
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds = self.step(batch)
 
         if self.train_mode == "video":
-            acc = self.val_acc(preds, batch[1])
+            acc = self.val_acc(preds, batch[0]["act"])
             self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
             self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
-            return {"loss": loss, "preds": preds, "targets": batch[1]}
+            return {"loss": loss, "preds": preds, "targets": batch[0]["act"]}
 
         # log val metrics
         obj_acc = self.val_acc(preds["obj"], batch["obj_label"])
@@ -130,8 +130,8 @@ class UnifiedHOModule(LightningModule):
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],
             "verb_pred": preds["verb"],
-            "obj_targets": batch["obj_label"],
-            "verb_targets": batch["verb"],
+            # "obj_targets": batch["obj_label"],
+            # "verb_targets": batch["verb"],
         }
 
     def validation_epoch_end(self, outputs: List[Any]):
@@ -148,11 +148,11 @@ class UnifiedHOModule(LightningModule):
         loss, preds = self.step(batch)
 
         if self.train_mode == "video":
-            acc = self.test_acc(preds, batch[1])
+            acc = self.test_acc(preds, batch[0]["act"])
             self.log("test/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
             self.log("test/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
-            return {"loss": loss, "preds": preds, "targets": batch[1]}
+            return {"loss": loss, "preds": preds, "targets": batch[0]["act"]}
 
         # log val metrics
         obj_acc = self.test_acc(preds["obj"], batch["obj_label"])
@@ -168,8 +168,8 @@ class UnifiedHOModule(LightningModule):
             "verb_loss": loss["verb_loss"],
             "obj_pred": preds["obj"],
             "verb_pred": preds["verb"],
-            "obj_targets": batch["obj_label"],
-            "verb_targets": batch["verb"],
+            # "obj_targets": batch["obj_label"],
+            # "verb_targets": batch["verb"],
         }
 
     def test_epoch_end(self, outputs: List[Any]):

@@ -14,18 +14,18 @@ datamodule:
     val_list: ${data_dir}/label_split/pose_train.txt
     test_list: ${data_dir}/label_split/pose_train.txt
   action_files:
-    train_list: ${data_dir}/label_split/action_train.txt
-    val_list: ${data_dir}/label_split/action_val.txt
+    train_list: ${data_dir}/label_split/action_train_bk.txt
+    val_list: ${data_dir}/label_split/action_val_bk.txt
     test_list: ${data_dir}/label_split/action_test.txt
   data_dir: ${data_dir}
   data_type: ${train_mode}
   batch_size: 8
-  num_workers: 4
+  num_workers: 0
   pin_memory: false
   frames_per_segment: 6
 model:
   _target_: src.models.unified_ho_module.UnifiedHOModule
-  lr: 0.001
+  lr: 0.05
   weight_decay: 0
   data_type: ${train_mode}
   fcn:
@@ -38,7 +38,7 @@ model:
     _target_: src.models.components.temporal.TemporalModule
     act_classes: 37
     n_hidden: 128
-    n_layers: 6
+    n_layers: 3
     drop_prob: 0.5
 callbacks:
   model_checkpoint:
@@ -75,6 +75,6 @@ trainer:
   _target_: pytorch_lightning.Trainer
   gpus: 2
   min_epochs: 1
-  max_epochs: 10
+  max_epochs: 25
   resume_from_checkpoint: null
   strategy: ddp
