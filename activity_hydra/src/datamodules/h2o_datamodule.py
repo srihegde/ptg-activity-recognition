@@ -28,15 +28,22 @@ def collate_fn_pad(batch):
     assume it takes in images rather than arbitrary tensors.
     """
     ## get sequence lengths
-    # pdb.set_trace()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     lengths = torch.tensor([len(t[0]["feats"]) for t in batch]).to(device)
     ## padd
     data_dic = {}
     feats = [torch.cat(t[0]["feats"]).to(device) for t in batch]
     data_dic["feats"] = torch.nn.utils.rnn.pad_sequence(feats)
-    data_dic["act"] = torch.Tensor([t[1] for t in batch]).to(device)
+    data_dic["act"] = torch.Tensor([t[1] for t in batch]).to(device).int()
+    labels = {"l_hand": [], "r_hand": []}
+    for t in batch:
+        labels["l_hand"].append(torch.cat([k["l_hand"] for k in t[0]["labels"]]).to(device))
+        labels["r_hand"].append(torch.cat([k["r_hand"] for k in t[0]["labels"]]).to(device))
+    labels["l_hand"] = torch.nn.utils.rnn.pad_sequence(labels["l_hand"])
+    labels["r_hand"] = torch.nn.utils.rnn.pad_sequence(labels["r_hand"])
+    data_dic["labels"] = labels
     batch = data_dic
+    # pdb.set_trace()
     return batch, lengths
 
 

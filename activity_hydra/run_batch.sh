@@ -14,7 +14,8 @@
 #SBATCH --output=./outfiles/ptg_activity.out.%j
 #SBATCH --error=./outfiles/ptg_activity.err.%j
 
+source ~/miniconda3/etc/profile.d/conda.sh
 conda activate myenv
 
-#HYDRA_FULL_ERROR=1 python train.py trainer.gpus=1
+# HYDRA_FULL_ERROR=1 python train.py trainer.gpus=1
 HYDRA_FULL_ERROR=1 python train.py trainer.gpus=2 +trainer.strategy=ddp
