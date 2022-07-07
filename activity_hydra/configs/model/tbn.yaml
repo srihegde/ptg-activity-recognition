@@ -1,0 +1,20 @@
+# _target_: src.models.tbn_lightning.TBNLightning
+# lr: 5e-2
+# weight_decay: 0
+
+# tbn:
+#   _target_: src.models.components.tbn.TBN
+#   act_classes: 37
+#   num_segments, modality,
+#                  base_model='resnet101', new_length=None,
+#                  consensus_type='avg', before_softmax=True,
+#                  dropout=0.8,
+#                  crop_num=1, midfusion='concat'
+#   net: resnext
+#   num_cpts: 21
+#   obj_classes: 9
+#   verb_classes: 12
+
+#   n_hidden: 128
+#   n_layers: 3
+#   drop_prob: 0.5

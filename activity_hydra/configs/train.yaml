@@ -4,7 +4,7 @@
 defaults:
   - _self_
   - datamodule: h2o.yaml
-  - model: model.yaml
+  - model: rulstm.yaml
   - callbacks: default.yaml
   - logger: tensorboard.yaml # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml

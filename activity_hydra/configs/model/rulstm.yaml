@@ -1,0 +1,20 @@
+_target_: src.models.unified_ho_module.UnifiedHOModule
+lr: 5e-2
+weight_decay: 0
+data_type: ${train_mode} # data_type is specified in test/train yaml file
+
+fcn:
+  _target_: src.models.components.unified_fcn.UnifiedFCNModule
+  net: resnext
+  num_cpts: 21
+  obj_classes: 9
+  verb_classes: 12
+
+temporal:
+  _target_: src.models.components.rulstm.RULSTM
+  act_classes: 37
+  hidden: 128
+  dropout: 0
+  depth: 3
+  sequence_completion: False
+  return_context: False

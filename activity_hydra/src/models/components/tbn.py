@@ -1,18 +1,18 @@
 from torch import nn
-from fusion_classification_network import Fusion_Classification_Network
-from transforms import *
+from .tbn_deps.fusion_classification_network import Fusion_Classification_Network
+from .tbn_deps.transforms import *
 from collections import OrderedDict
 
 
 class TBN(nn.Module):
 
-    def __init__(self, num_class, num_segments, modality,
+    def __init__(self, act_classes, num_segments, modality,
                  base_model='resnet101', new_length=None,
                  consensus_type='avg', before_softmax=True,
                  dropout=0.8,
                  crop_num=1, midfusion='concat'):
         super(TBN, self).__init__()
-        self.num_class = num_class
+        self.act_classes = act_classes
         self.modality = modality
         self.num_segments = num_segments
         self.before_softmax = before_softmax
@@ -79,7 +79,7 @@ TSN Configurations:
         self._remove_last_layer()
 
         self.fusion_classification_net = Fusion_Classification_Network(
-            self.feature_dim, self.modality, self.midfusion, self.num_class,
+            self.feature_dim, self.modality, self.midfusion, self.act_classes,
             self.consensus_type, self.before_softmax, self.dropout, self.num_segments)
 
     def _prepare_base_model(self, base_model):
