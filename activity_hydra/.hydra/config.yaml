@@ -25,7 +25,7 @@ datamodule:
   frames_per_segment: 6
 model:
   _target_: src.models.unified_ho_module.UnifiedHOModule
-  lr: 0.05
+  lr: 0.005
   weight_decay: 0
   data_type: ${train_mode}
   fcn:
