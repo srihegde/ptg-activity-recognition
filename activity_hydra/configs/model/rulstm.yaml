@@ -1,5 +1,5 @@
 _target_: src.models.unified_ho_module.UnifiedHOModule
-lr: 5e-2
+lr: 5e-3
 weight_decay: 0
 data_type: ${train_mode} # data_type is specified in test/train yaml file
 

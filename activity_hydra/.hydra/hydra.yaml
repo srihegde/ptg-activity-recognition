@@ -122,12 +122,13 @@ hydra:
     - hydra.job.name=train_ddp_process_1
     - hydra.mode=RUN
     task:
+    - trainer.resume_from_checkpoint=checkpoints/rulstm_ep_24.ckpt
     - trainer.gpus=2
     - +trainer.strategy=ddp
   job:
     name: train_ddp_process_1
     chdir: null
-    override_dirname: +trainer.strategy=ddp,trainer.gpus=2
+    override_dirname: +trainer.strategy=ddp,trainer.gpus=2,trainer.resume_from_checkpoint=checkpoints/rulstm_ep_24.ckpt
     id: ???
     num: ???
     config_name: train.yaml
@@ -165,7 +166,7 @@ hydra:
       trainer: default.yaml
       logger: tensorboard.yaml
       callbacks: default.yaml
-      model: model.yaml
+      model: rulstm.yaml
       datamodule: h2o.yaml
       hydra/env: default
       hydra/callbacks: null

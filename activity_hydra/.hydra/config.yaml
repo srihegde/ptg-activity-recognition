@@ -15,11 +15,11 @@ datamodule:
     test_list: ${data_dir}/label_split/pose_train.txt
   action_files:
     train_list: ${data_dir}/label_split/action_train_bk.txt
-    val_list: ${data_dir}/label_split/action_val_bk.txt
+    val_list: ${data_dir}/label_split/action_val_int.txt
     test_list: ${data_dir}/label_split/action_test.txt
   data_dir: ${data_dir}
   data_type: ${train_mode}
-  batch_size: 8
+  batch_size: 4
   num_workers: 0
   pin_memory: false
   frames_per_segment: 6
@@ -35,11 +35,13 @@ model:
     obj_classes: 9
     verb_classes: 12
   temporal:
-    _target_: src.models.components.temporal.TemporalModule
+    _target_: src.models.components.rulstm.RULSTM
     act_classes: 37
-    n_hidden: 128
-    n_layers: 3
-    drop_prob: 0.5
+    hidden: 128
+    dropout: 0
+    depth: 3
+    sequence_completion: false
+    return_context: false
 callbacks:
   model_checkpoint:
     _target_: pytorch_lightning.callbacks.ModelCheckpoint
@@ -75,6 +77,6 @@ trainer:
   _target_: pytorch_lightning.Trainer
   gpus: 2
   min_epochs: 1
-  max_epochs: 25
-  resume_from_checkpoint: null
+  max_epochs: 50
+  resume_from_checkpoint: checkpoints/rulstm_ep_24.ckpt
   strategy: ddp
