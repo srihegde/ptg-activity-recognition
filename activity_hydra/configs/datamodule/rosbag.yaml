@@ -1,0 +1,19 @@
+_target_: src.datamodules.ros_datamodule.ROSDataModule
+
+pose_files:
+  train_list: ${data_dir}/label_split/pose_train.txt
+  val_list: ${data_dir}/label_split/pose_train.txt
+  test_list: ${data_dir}/label_split/pose_train.txt
+
+action_files:
+  train_list: ${data_dir}/label_split/action_train.txt
+  val_list: ${data_dir}/label_split/action_val.txt
+  test_list: ${data_dir}/label_split/action_test.txt
+
+data_dir: ${data_dir} # data_dir is specified in test/train yaml file
+data_type: ${train_mode} # data_type is specified in test/train yaml file
+
+batch_size: 2
+num_workers: 0
+pin_memory: False
+frames_per_segment: 6

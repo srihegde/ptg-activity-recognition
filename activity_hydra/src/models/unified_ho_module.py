@@ -48,6 +48,7 @@ class UnifiedHOModule(LightningModule):
         self.test_acc = Accuracy()
 
         # for logging best so far validation accuracy
+        # pdb.set_trace()
         self.val_acc_best = MaxMetric()
 
     def forward(self, data):
@@ -102,7 +103,6 @@ class UnifiedHOModule(LightningModule):
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
-        # pdb.set_trace()
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
