@@ -77,13 +77,15 @@ class UnifiedFCNModule(nn.Module):
         x = self.selected_out["avgpool"].reshape(-1, self.fc1.in_features)
         ov_preds = self.fc1(x)
 
-        loss = dict(
-            obj_loss=self.oclass_loss(ov_preds[:, : self.obj_classes], data["obj_label"]),
-            verb_loss=self.vclass_loss(ov_preds[:, self.obj_classes :], data["verb"]),
-        )
-        ov_preds = dict(
-            obj=torch.argmax(ov_preds[:, : self.obj_classes], dim=1),
-            verb=torch.argmax(ov_preds[:, self.obj_classes :], dim=1),
-        )
-
-        return x, ov_preds, loss
+        if "obj_label" in data.keys() and "verb" in data.keys():
+            loss = dict(
+                obj_loss=self.oclass_loss(ov_preds[:, : self.obj_classes], data["obj_label"]),
+                verb_loss=self.vclass_loss(ov_preds[:, self.obj_classes :], data["verb"]),
+            )
+            ov_preds = dict(
+                obj=torch.argmax(ov_preds[:, : self.obj_classes], dim=1),
+                verb=torch.argmax(ov_preds[:, self.obj_classes :], dim=1),
+            )
+            return x, ov_preds, loss
+        else:
+            return x, {}, 0

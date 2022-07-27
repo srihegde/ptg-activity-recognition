@@ -14,7 +14,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import transforms
 
-from .components.frame_dataset import H2OFrameDataset
+from .components.frame_dataset import ROSFrameDataset
 from .components.video_dataset import H2OVideoDataset
 
 
@@ -44,7 +44,7 @@ def collate_fn_pad(batch):
     return batch, lengths
 
 
-class H2ODataModule(LightningDataModule):
+class ROSDataModule(LightningDataModule):
     """Example of LightningDataModule for MNIST dataset.
 
     A DataModule implements 5 key methods:
@@ -103,7 +103,7 @@ class H2ODataModule(LightningDataModule):
 
     @property
     def num_classes(self) -> int:
-        return 37  # Action (interaction) classes
+        return 6  # Action (interaction) classes
 
     def prepare_data(self):
         """Download data if needed.
@@ -126,17 +126,17 @@ class H2ODataModule(LightningDataModule):
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             if self.data_type == "frame":
-                self.data_train = H2OFrameDataset(
+                self.data_train = ROSFrameDataset(
                     self.hparams.data_dir,
                     self.hparams.pose_files["train_list"],
                     transform=self.transforms,
                 )
-                self.data_val = H2OFrameDataset(
+                self.data_val = ROSFrameDataset(
                     self.hparams.data_dir,
                     self.hparams.pose_files["val_list"],
                     transform=self.transforms,
                 )
-                self.data_test = H2OFrameDataset(
+                self.data_test = ROSFrameDataset(
                     self.hparams.data_dir,
                     self.hparams.pose_files["test_list"],
                     transform=self.transforms,

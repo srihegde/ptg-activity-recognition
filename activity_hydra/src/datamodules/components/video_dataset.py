@@ -31,7 +31,8 @@ class VideoRecord(object):
 
     def __init__(self, row, root_datapath, use_feats):
         self._data = row
-        self._path = os.path.join(root_datapath, row[1], "cam4")
+        # self._path = os.path.join(root_datapath, row[1], "cam4")
+        self._path = root_datapath
         self.use_feats = use_feats
 
         if self.use_feats:

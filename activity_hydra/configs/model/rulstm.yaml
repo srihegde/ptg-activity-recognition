@@ -12,7 +12,7 @@ fcn:
 
 temporal:
   _target_: src.models.components.rulstm.RULSTM
-  act_classes: 37
+  act_classes: 6
   hidden: 128
   dropout: 0
   depth: 3
