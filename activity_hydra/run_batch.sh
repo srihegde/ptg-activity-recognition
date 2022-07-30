@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is a slurm utility script for scheduling the training job 
+# This is a slurm utility script for scheduling the training job
 # on SLURM scheduler (for eg. on numenor server). This file could
 # be added under "scripts" folder if required (make suitable path
 # adjustments in this case).

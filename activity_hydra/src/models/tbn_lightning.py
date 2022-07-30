@@ -1,9 +1,7 @@
-"""
+"""###### Work in Progress ###### Implementation of Temporal Binding Networks.
 
-TODO:
-* Implement Temporal Module
-* Update documentation
-
+(official paper - "EPIC-Fusion: Audio-Visual Temporal Binding for Egocentric Action Recognition")
+(official implentation - http://github.com/ekazakos/temporal-binding-network)
 """
 
 import pdb
@@ -16,7 +14,8 @@ from torchmetrics.classification.accuracy import Accuracy
 
 
 class TBNLightning(LightningModule):
-    """This class implements the mulit-modal TBN model in Pytorch Lightning Framework.
+    """This class implements the mulit-modal TBN model in Pytorch Lightning
+    Framework.
 
     Args: TBD
     """

@@ -72,7 +72,7 @@ logger:
     version: ${name}
     log_graph: false
     default_hp_metric: true
-    prefix: ''
+    prefix: ""
 trainer:
   _target_: pytorch_lightning.Trainer
   gpus: 2

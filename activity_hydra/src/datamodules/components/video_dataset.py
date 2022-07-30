@@ -4,7 +4,6 @@ Source: https://github.com/RaivoKoot/Video-Dataset-Loading-Pytorch
 
 import os
 import os.path
-import pdb
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
@@ -31,8 +30,11 @@ class VideoRecord(object):
 
     def __init__(self, row, root_datapath, use_feats):
         self._data = row
-        # self._path = os.path.join(root_datapath, row[1], "cam4")
+
         self._path = root_datapath
+        ######## Uncomment the line below for training on H2O dataset ########
+        # self._path = os.path.join(root_datapath, row[1], "cam4")
+
         self.use_feats = use_feats
 
         if self.use_feats:
@@ -285,7 +287,6 @@ class H2OVideoDataset(torch.utils.data.Dataset):
 
         # from each start_index, load self.frames_per_segment
         # consecutive frames
-        # pdb.set_trace()
         for start_index in frame_start_indices:
             frame_index = int(start_index)
 

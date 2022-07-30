@@ -1,13 +1,3 @@
-"""
-
-TODO:
-* Implement losses MSE and CE losses
-* Use hydra to set hyperparams: alpha and dth (distance threshold)
-* Update documentation
-
-"""
-
-import pdb
 from collections import OrderedDict
 from multiprocessing import Pool
 from typing import Dict, Tuple
@@ -21,10 +11,7 @@ from torchvision.models import resnext50_32x4d  # ,convnext_tiny
 
 class UnifiedFCNModule(nn.Module):
     """Class implements fully convolutional network for extracting spatial
-    features from the video frames.
-
-    Args: TBD
-    """
+    features from the video frames."""
 
     def __init__(self, net: str, num_cpts: int, obj_classes: int, verb_classes: int):
         super(UnifiedFCNModule, self).__init__()
@@ -71,7 +58,6 @@ class UnifiedFCNModule(nn.Module):
         return net
 
     def forward(self, data: Dict):
-        # pdb.set_trace()
         x = data["frm"]
         out = self.net(x)
         x = self.selected_out["avgpool"].reshape(-1, self.fc1.in_features)

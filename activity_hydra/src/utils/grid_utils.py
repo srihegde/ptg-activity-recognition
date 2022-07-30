@@ -1,10 +1,3 @@
-"""
-
-TODO:
-* Document functions
-
-"""
-
 import numpy as np
 
 

@@ -1,11 +1,3 @@
-"""
-
-TODO:
-* Update documentation
-
-"""
-
-import pdb
 from typing import Dict, Optional
 
 import torch
@@ -21,8 +13,12 @@ from .components.video_dataset import H2OVideoDataset
 def collate_fn_pad(batch):
     """Padds batch of variable length.
 
-    note: it converts things ToTensor manually here since the ToTensor transform
-    assume it takes in images rather than arbitrary tensors.
+    :params batch (Dict): Batch data with labels + auxiliary data from
+        dataloader
+
+    :returns batch (Dict): Processed batch with labels + auxiliary data
+    :returns lengths (torch.Tensor): Lengths of sequences of each
+        sample in batch
     """
     ## get sequence lengths
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -40,12 +36,12 @@ def collate_fn_pad(batch):
     labels["r_hand"] = torch.nn.utils.rnn.pad_sequence(labels["r_hand"])
     data_dic["labels"] = labels
     batch = data_dic
-    # pdb.set_trace()
+
     return batch, lengths
 
 
 class ROSDataModule(LightningDataModule):
-    """Example of LightningDataModule for MNIST dataset.
+    """``LightningDataModule`` for Hololens2 data collected from a ROS node.
 
     A DataModule implements 5 key methods:
         - prepare_data (things to do on 1 GPU/TPU, not on every GPU/TPU in distributed mode)

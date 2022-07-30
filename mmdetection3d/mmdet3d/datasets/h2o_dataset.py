@@ -1,8 +1,3 @@
-"""# TODO:
-
-# * Update documentation
-"""
-import pdb
 from os import path as osp
 
 import cv2
@@ -125,8 +120,14 @@ class H2ODataset(Custom3DDataset):
                 - sample_idx (str): Sample index.
                 - pts_filename (str): Filename of point clouds.
                 - vid_filename (str): Filename of the video file.
-                - img_filename (str, optional): Image filename.
-                - ann_info (dict): Annotation info. (if in training mode)
+                - img_prefix (str, optional): Path to images folder.
+                - img_info (str, optional): Image metadata.
+                - gt_bboxes (torch.Tensor): Ground truth bounding boxes
+                - gt_labels (torch.Tensor): Ground truth object labels
+                If in training mode:
+                - ann_info (dict): Annotation info.
+                - centers2d (torch.Tensor): Centers of bboxes.
+                - depths (torch.Tensor): Depth parameter from dataset.
         """
         info = self.data_infos[index]
         camera_matrix = self._get_cam_matrix(info["vid_path"])
@@ -155,12 +156,14 @@ class H2ODataset(Custom3DDataset):
             index (int): Index of the annotation data to get.
 
         Returns:
-            dict: Annotation information consists of the following keys:
+            - anns_results (dict): Annotation information consists of the following keys:
 
                 - gt_bboxes_3d (:obj:`LiDARInstance3DBoxes`):
                     3D ground truth bboxes
                 - gt_labels_3d (np.ndarray): Labels of ground truths.
                 - gt_names (list[str]): Class names of ground truths.
+            - gt_obj_centers (torch.Tensor): Centers of GT bboxes.
+            - depth (torch.Tensor): Depth parameter from dataset.
         """
         info = self.data_infos[index]
         gt_labels_3d, gt_bboxes_3d, gt_obj_centers, depth = self._load_obj_data(
@@ -271,7 +274,6 @@ class H2ODataset(Custom3DDataset):
 
         gt_annos = [info["annos"] for info in self.data_infos]
         label2cat = {i: cat_id for i, cat_id in enumerate(self.CLASSES)}
-        # pdb.set_trace()
         ret_dict = indoor_eval(
             gt_annos,
             results,

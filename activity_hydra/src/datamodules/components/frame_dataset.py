@@ -1,12 +1,3 @@
-"""
-
-TODO:
-* Add transforms functionality
-* Hand pose needs projection code from Opencv
-* Add comments + docs
-
-"""
-
 import os
 import os.path
 from typing import List, Tuple
@@ -82,7 +73,8 @@ class H2OFrameDataset(torch.utils.data.Dataset):
         return len(self.frame_list)
 
     def __getitem__(self, idx: int):
-        """For frame with id idx, loads frame with corresponding labels - hand pose, object pose, object label, verb
+        """For frame with id idx, loads frame with corresponding labels - hand pose, object pose,
+        object label, verb.
 
         Args:
             idx: Frame sample index.
@@ -178,7 +170,7 @@ class ROSFrameDataset(torch.utils.data.Dataset):
         return len(self.frame_list)
 
     def __getitem__(self, idx: int):
-        """For frame with id idx, loads frame with corresponding labels - hand pose, object pose, object label, verb
+        """For frame with id idx, loads frame with corresponding labels - hand pose.
 
         Args:
             idx: Frame sample index.

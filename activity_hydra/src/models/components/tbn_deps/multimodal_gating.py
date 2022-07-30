@@ -50,12 +50,15 @@ class Multimodal_Gated_Unit(nn.Module):
 
         # h computation
         if self.mode == 0:
-            h = torch.mul(z1, h1)\
-                + torch.mul(z2, h2)\
-                + torch.mul(z3, h3)
+            h = torch.mul(z1, h1) + torch.mul(z2, h2) + torch.mul(z3, h3)
         elif self.mode == 1:
-            h = torch.mul(z1, h1) + torch.mul((1 - z1), h2 + h3)\
-                + torch.mul(z2, h2) + torch.mul((1 - z2), h1 + h3)\
-                + torch.mul(z3, h3) + torch.mul((1 - z3), h1 + h2)
+            h = (
+                torch.mul(z1, h1)
+                + torch.mul((1 - z1), h2 + h3)
+                + torch.mul(z2, h2)
+                + torch.mul((1 - z2), h1 + h3)
+                + torch.mul(z3, h3)
+                + torch.mul((1 - z3), h1 + h2)
+            )
 
         return h

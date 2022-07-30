@@ -1,12 +1,3 @@
-"""
-
-TODO:
-* Implement Temporal Module
-* Update documentation
-
-"""
-
-import pdb
 from typing import Any, Dict, List
 
 import torch
@@ -17,10 +8,10 @@ from torchmetrics.classification.accuracy import Accuracy
 
 class UnifiedHOModule(LightningModule):
     """This class implements the spatio-temporal model used for unified
-    representation of hands and interacting objects in the scene. This model
-    also performs the activity recognition for the given frame sequence.
+    representation of hands and interacting objects in the scene.
 
-    Args: TBD
+    This model also performs the activity recognition for the given frame
+    sequence.
     """
 
     def __init__(
@@ -48,7 +39,6 @@ class UnifiedHOModule(LightningModule):
         self.test_acc = Accuracy()
 
         # for logging best so far validation accuracy
-        # pdb.set_trace()
         self.val_acc_best = MaxMetric()
 
     def forward(self, data):

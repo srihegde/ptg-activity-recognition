@@ -1,6 +1,6 @@
 import torch
-from torch import nn
 import torch.nn.functional as F
+from torch import nn
 
 
 class Gated_Embedding_Unit(nn.Module):
@@ -12,9 +12,9 @@ class Gated_Embedding_Unit(nn.Module):
 
     def forward(self, x):
 
-        x = self.fc(x)  #FC layer 
-        x = self.cg(x)  #Context Gating Unit
-        x = F.normalize(x)  #normalise
+        x = self.fc(x)  # FC layer
+        x = self.cg(x)  # Context Gating Unit
+        x = F.normalize(x)  # normalise
 
         return x
 

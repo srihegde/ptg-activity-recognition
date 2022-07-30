@@ -1,12 +1,10 @@
-import pdb
-
 import torch
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
 class TemporalModule(nn.Module):
-    """docstring for TemporalModule."""
+    """This is a simple implementation of TemporalModule using LSTMs."""
 
     def __init__(
         self, act_classes: int, n_hidden: int = 128, n_layers: int = 1, drop_prob: float = 0.5
@@ -31,7 +29,6 @@ class TemporalModule(nn.Module):
         x = data[0]["feats"]
         batch_size = x.shape[1]
         lh, rh = data[0]["labels"]["l_hand"], data[0]["labels"]["r_hand"]
-        # pdb.set_trace()
         h = self.fc_h(torch.cat([lh, rh], axis=-1).float())
         x = self.fc1(x)
         x = torch.cat([x, h], axis=-1)
