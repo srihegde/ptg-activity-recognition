@@ -1,0 +1,2 @@
+2022-07-08 13:06:41.277232: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+slurmstepd-numenor: error: *** JOB 5509 ON numenor CANCELLED AT 2022-07-08T17:33:22 ***

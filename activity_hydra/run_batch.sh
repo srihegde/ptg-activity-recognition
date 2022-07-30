@@ -25,3 +25,6 @@ conda activate myenv
 
 # HYDRA_FULL_ERROR=1 python train.py trainer.gpus=1
 HYDRA_FULL_ERROR=1 python train.py trainer.gpus=2 +trainer.strategy=ddp
+
+# Resuming training from checkpoint
+# HYDRA_FULL_ERROR=1 python train.py trainer.resume_from_checkpoint="checkpoints/rulstm_ep_24.ckpt" trainer.gpus=2 +trainer.strategy=ddp

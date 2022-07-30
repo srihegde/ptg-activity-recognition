@@ -130,7 +130,7 @@ hydra:
     override_dirname: +trainer.strategy=ddp,trainer.gpus=2
     id: ???
     num: ???
-    config_name: train.yaml
+    config_name: angel_train.yaml
     env_set: {}
     env_copy: []
     config:
@@ -165,8 +165,8 @@ hydra:
       trainer: default.yaml
       logger: tensorboard.yaml
       callbacks: default.yaml
-      model: model.yaml
-      datamodule: h2o.yaml
+      model: rulstm.yaml
+      datamodule: rosbag.yaml
       hydra/env: default
       hydra/callbacks: null
       hydra/job_logging: colorlog

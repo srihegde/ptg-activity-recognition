@@ -1,31 +1,31 @@
 original_work_dir: ${hydra:runtime.cwd}
-data_dir: ${original_work_dir}/data/h2o
+data_dir: ${original_work_dir}/data/rosdata
 print_config: true
 ignore_warnings: true
 train: true
 test: true
 seed: 25
-name: default
+name: angel_train
 train_mode: video
 datamodule:
-  _target_: src.datamodules.h2o_datamodule.H2ODataModule
+  _target_: src.datamodules.ros_datamodule.ROSDataModule
   pose_files:
     train_list: ${data_dir}/label_split/pose_train.txt
     val_list: ${data_dir}/label_split/pose_train.txt
     test_list: ${data_dir}/label_split/pose_train.txt
   action_files:
-    train_list: ${data_dir}/label_split/action_train_bk.txt
-    val_list: ${data_dir}/label_split/action_val_bk.txt
+    train_list: ${data_dir}/label_split/action_train.txt
+    val_list: ${data_dir}/label_split/action_val.txt
     test_list: ${data_dir}/label_split/action_test.txt
   data_dir: ${data_dir}
   data_type: ${train_mode}
-  batch_size: 8
+  batch_size: 2
   num_workers: 0
   pin_memory: false
   frames_per_segment: 6
 model:
   _target_: src.models.unified_ho_module.UnifiedHOModule
-  lr: 0.05
+  lr: 0.005
   weight_decay: 0
   data_type: ${train_mode}
   fcn:
@@ -35,11 +35,13 @@ model:
     obj_classes: 9
     verb_classes: 12
   temporal:
-    _target_: src.models.components.temporal.TemporalModule
-    act_classes: 37
-    n_hidden: 128
-    n_layers: 3
-    drop_prob: 0.5
+    _target_: src.models.components.rulstm.RULSTM
+    act_classes: 6
+    hidden: 128
+    dropout: 0
+    depth: 3
+    sequence_completion: false
+    return_context: false
 callbacks:
   model_checkpoint:
     _target_: pytorch_lightning.callbacks.ModelCheckpoint

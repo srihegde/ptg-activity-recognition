@@ -1,136 +1,139 @@
-[[36m2022-07-05 21:55:14,233[0m][[34msrc.utils[0m][[32mINFO[0m] - Disabling python warnings! <config.ignore_warnings=True>[0m
-[[36m2022-07-05 21:55:14,233[0m][[34msrc.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <config.print_config=True>[0m
+[[36m2022-07-08 13:06:40,663[0m][[34msrc.utils[0m][[32mINFO[0m] - Disabling python warnings! <config.ignore_warnings=True>[0m
+[[36m2022-07-08 13:06:40,664[0m][[34msrc.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <config.print_config=True>[0m
 CONFIG
 ├── datamodule
-│   └── _target_: src.datamodules.h2o_datamodule.H2ODataModule
-│       pose_files:
+│   └── _target_: src.datamodules.h2o_datamodule.H2ODataModule                  
+│       pose_files:                                                             
 │         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
 │         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
 │         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
-│       action_files:
+│       action_files:                                                           
 │         train_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/da
 │         val_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data
 │         test_list: /data/sri.hegde/ptg-activity-recognition/activity_hydra/dat
 │       data_dir: /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h
-│       data_type: video
-│       batch_size: 8
-│       num_workers: 0
-│       pin_memory: false
-│       frames_per_segment: 6
-│
+│       data_type: video                                                        
+│       batch_size: 4                                                           
+│       num_workers: 0                                                          
+│       pin_memory: false                                                       
+│       frames_per_segment: 6                                                   
+│                                                                               
 ├── model
-│   └── _target_: src.models.unified_ho_module.UnifiedHOModule
-│       lr: 0.05
-│       weight_decay: 0
-│       data_type: video
-│       fcn:
-│         _target_: src.models.components.unified_fcn.UnifiedFCNModule
-│         net: resnext
-│         num_cpts: 21
-│         obj_classes: 9
-│         verb_classes: 12
-│       temporal:
-│         _target_: src.models.components.temporal.TemporalModule
-│         act_classes: 37
-│         n_hidden: 128
-│         n_layers: 3
-│         drop_prob: 0.5
-│
+│   └── _target_: src.models.unified_ho_module.UnifiedHOModule                  
+│       lr: 0.005                                                               
+│       weight_decay: 0                                                         
+│       data_type: video                                                        
+│       fcn:                                                                    
+│         _target_: src.models.components.unified_fcn.UnifiedFCNModule          
+│         net: resnext                                                          
+│         num_cpts: 21                                                          
+│         obj_classes: 9                                                        
+│         verb_classes: 12                                                      
+│       temporal:                                                               
+│         _target_: src.models.components.rulstm.RULSTM                         
+│         act_classes: 37                                                       
+│         hidden: 128                                                           
+│         dropout: 0                                                            
+│         depth: 3                                                              
+│         sequence_completion: false                                            
+│         return_context: false                                                 
+│                                                                               
 ├── callbacks
-│   └── model_checkpoint:
-│         _target_: pytorch_lightning.callbacks.ModelCheckpoint
-│         monitor: val/acc
-│         mode: max
-│         save_top_k: 1
-│         save_last: true
-│         verbose: false
-│         dirpath: checkpoints/
-│         filename: epoch_{epoch:03d}
-│         auto_insert_metric_name: false
-│       early_stopping:
-│         _target_: pytorch_lightning.callbacks.EarlyStopping
-│         monitor: val/acc
-│         mode: max
-│         patience: 100
-│         min_delta: 0
-│       model_summary:
-│         _target_: pytorch_lightning.callbacks.RichModelSummary
-│         max_depth: -1
-│       rich_progress_bar:
-│         _target_: pytorch_lightning.callbacks.RichProgressBar
-│
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         monitor: val/acc                                                      
+│         mode: max                                                             
+│         save_top_k: 1                                                         
+│         save_last: true                                                       
+│         verbose: false                                                        
+│         dirpath: checkpoints/                                                 
+│         filename: epoch_{epoch:03d}                                           
+│         auto_insert_metric_name: false                                        
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/acc                                                      
+│         mode: max                                                             
+│         patience: 100                                                         
+│         min_delta: 0                                                          
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
 ├── logger
-│   └── tensorboard:
-│         _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
-│         save_dir: tensorboard/
-│         name: null
-│         version: default
-│         log_graph: false
-│         default_hp_metric: true
-│         prefix: ''
-│
+│   └── tensorboard:                                                            
+│         _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger     
+│         save_dir: tensorboard/                                                
+│         name: null                                                            
+│         version: default                                                      
+│         log_graph: false                                                      
+│         default_hp_metric: true                                               
+│         prefix: ''                                                            
+│                                                                               
 ├── trainer
-│   └── _target_: pytorch_lightning.Trainer
-│       gpus: 2
-│       min_epochs: 1
-│       max_epochs: 25
-│       resume_from_checkpoint: null
-│       strategy: ddp
-│
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       gpus: 2                                                                 
+│       min_epochs: 1                                                           
+│       max_epochs: 50                                                          
+│       resume_from_checkpoint: checkpoints/rulstm_ep_24.ckpt                   
+│       strategy: ddp                                                           
+│                                                                               
 ├── original_work_dir
-│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra                 
 ├── data_dir
-│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h2o
+│   └── /data/sri.hegde/ptg-activity-recognition/activity_hydra/data/h2o        
 ├── print_config
-│   └── True
+│   └── True                                                                    
 ├── ignore_warnings
-│   └── True
+│   └── True                                                                    
 ├── train
-│   └── True
+│   └── True                                                                    
 ├── test
-│   └── True
+│   └── True                                                                    
 ├── seed
-│   └── 25
+│   └── 25                                                                      
 ├── name
-│   └── default
+│   └── default                                                                 
 └── train_mode
-    └── video
-[[36m2022-07-05 21:55:14,318[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-[[36m2022-07-05 21:55:14,340[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating datamodule <src.datamodules.h2o_datamodule.H2ODataModule>[0m
-[[36m2022-07-05 21:55:14,383[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating model <src.models.unified_ho_module.UnifiedHOModule>[0m
-[[36m2022-07-05 21:55:14,748[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpk51rsaz2[0m
-[[36m2022-07-05 21:55:14,748[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpk51rsaz2/_remote_module_non_sriptable.py[0m
-[[36m2022-07-05 21:55:14,787[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
-[[36m2022-07-05 21:55:14,788[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
-[[36m2022-07-05 21:55:14,789[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
-[[36m2022-07-05 21:55:14,790[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
-[[36m2022-07-05 21:55:14,790[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.tensorboard.TensorBoardLogger>[0m
-[[36m2022-07-05 21:55:14,791[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
-[[36m2022-07-05 21:55:14,829[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.[0m
-[[36m2022-07-05 21:55:14,829[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - GPU available: True, used: True[0m
-[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - TPU available: False, using: 0 TPU cores[0m
-[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - IPU available: False, using: 0 IPUs[0m
-[[36m2022-07-05 21:55:14,830[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - HPU available: False, using: 0 HPUs[0m
-[[36m2022-07-05 21:55:14,830[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Logging hyperparameters![0m
-[[36m2022-07-05 21:55:15,724[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Starting training![0m
-[[36m2022-07-05 21:55:17,045[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-[[36m2022-07-05 21:55:17,398[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmp5sr_jg_t[0m
-[[36m2022-07-05 21:55:17,421[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmp5sr_jg_t/_remote_module_non_sriptable.py[0m
-[[36m2022-07-05 21:55:17,616[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-[[36m2022-07-05 21:55:17,617[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/2[0m
-[[36m2022-07-05 21:55:20,352[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-[[36m2022-07-05 21:55:20,354[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/2[0m
-[[36m2022-07-05 21:55:20,619[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 1[0m
-[[36m2022-07-05 21:55:20,624[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 0[0m
-[[36m2022-07-05 21:55:20,625[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
-[[36m2022-07-05 21:55:20,625[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - ----------------------------------------------------------------------------------------------------
+    └── video                                                                   
+[[36m2022-07-08 13:06:40,746[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-08 13:06:40,749[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating datamodule <src.datamodules.h2o_datamodule.H2ODataModule>[0m
+[[36m2022-07-08 13:06:40,777[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating model <src.models.unified_ho_module.UnifiedHOModule>[0m
+[[36m2022-07-08 13:06:41,100[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmp5jliepcv[0m
+[[36m2022-07-08 13:06:41,100[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmp5jliepcv/_remote_module_non_sriptable.py[0m
+[[36m2022-07-08 13:06:41,141[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2022-07-08 13:06:41,143[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2022-07-08 13:06:41,143[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2022-07-08 13:06:41,144[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2022-07-08 13:06:41,144[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.tensorboard.TensorBoardLogger>[0m
+[[36m2022-07-08 13:06:41,145[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
+[[36m2022-07-08 13:06:41,182[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.[0m
+[[36m2022-07-08 13:06:41,182[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - GPU available: True, used: True[0m
+[[36m2022-07-08 13:06:41,182[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - TPU available: False, using: 0 TPU cores[0m
+[[36m2022-07-08 13:06:41,182[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - IPU available: False, using: 0 IPUs[0m
+[[36m2022-07-08 13:06:41,182[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - HPU available: False, using: 0 HPUs[0m
+[[36m2022-07-08 13:06:41,183[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Logging hyperparameters![0m
+[[36m2022-07-08 13:06:41,986[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Starting training![0m
+[[36m2022-07-08 13:06:43,236[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-08 13:06:43,585[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpjcsim9ma[0m
+[[36m2022-07-08 13:06:43,586[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpjcsim9ma/_remote_module_non_sriptable.py[0m
+[[36m2022-07-08 13:06:43,795[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-08 13:06:43,796[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/2[0m
+[[36m2022-07-08 13:06:46,624[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
+[[36m2022-07-08 13:06:46,625[0m][[34mpytorch_lightning.utilities.distributed[0m][[32mINFO[0m] - Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/2[0m
+[[36m2022-07-08 13:06:46,797[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 1[0m
+[[36m2022-07-08 13:06:46,802[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 0[0m
+[[36m2022-07-08 13:06:46,802[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
+[[36m2022-07-08 13:06:46,802[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - ----------------------------------------------------------------------------------------------------
 distributed_backend=nccl
 All distributed processes registered. Starting with 2 processes
 ----------------------------------------------------------------------------------------------------
 [0m
-[[36m2022-07-05 21:55:20,630[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
-[[36m2022-07-05 21:55:23,697[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1][0m
-[[36m2022-07-05 21:55:23,697[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1][0m
+[[36m2022-07-08 13:06:46,808[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 2 nodes.[0m
+[[36m2022-07-08 13:06:49,913[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Restoring states from the checkpoint path at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/rulstm_ep_24.ckpt[0m
+[[36m2022-07-08 13:06:50,031[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1][0m
+[[36m2022-07-08 13:06:50,032[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1][0m
 ┏━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
 ┃     ┃ Name                          ┃ Type              ┃ Params ┃
 ┡━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
@@ -289,42 +292,24 @@ All distributed processes registered. Starting with 2 processes
 │ 152 │ fcn.fc1                       │ Linear            │ 43.0 K │
 │ 153 │ fcn.oclass_loss               │ CrossEntropyLoss  │      0 │
 │ 154 │ fcn.vclass_loss               │ CrossEntropyLoss  │      0 │
-│ 155 │ temporal                      │ TemporalModule    │  1.1 M │
-│ 156 │ temporal.fc1                  │ Linear            │  262 K │
-│ 157 │ temporal.fc_h                 │ Linear            │ 16.3 K │
-│ 158 │ temporal.fc2                  │ Linear            │  4.8 K │
-│ 159 │ temporal.lstm1                │ LSTM              │  461 K │
-│ 160 │ temporal.lstm2                │ LSTM              │  396 K │
-│ 161 │ temporal.dropout              │ Dropout           │      0 │
-│ 162 │ temporal.loss                 │ CrossEntropyLoss  │      0 │
-│ 163 │ train_acc                     │ Accuracy          │      0 │
-│ 164 │ val_acc                       │ Accuracy          │      0 │
-│ 165 │ test_acc                      │ Accuracy          │      0 │
-│ 166 │ val_acc_best                  │ MaxMetric         │      0 │
+│ 155 │ temporal                      │ RULSTM            │  1.2 M │
+│ 156 │ temporal.dropout              │ Dropout           │      0 │
+│ 157 │ temporal.fc1                  │ Linear            │  262 K │
+│ 158 │ temporal.fc_h                 │ Linear            │ 16.3 K │
+│ 159 │ temporal.rolling_lstm         │ OpenLSTM          │  461 K │
+│ 160 │ temporal.rolling_lstm.lstm    │ LSTM              │  461 K │
+│ 161 │ temporal.unrolling_lstm       │ LSTM              │  461 K │
+│ 162 │ temporal.classifier           │ Sequential        │  4.8 K │
+│ 163 │ temporal.classifier.0         │ Dropout           │      0 │
+│ 164 │ temporal.classifier.1         │ Linear            │  4.8 K │
+│ 165 │ temporal.loss                 │ CrossEntropyLoss  │      0 │
+│ 166 │ train_acc                     │ Accuracy          │      0 │
+│ 167 │ val_acc                       │ Accuracy          │      0 │
+│ 168 │ test_acc                      │ Accuracy          │      0 │
+│ 169 │ val_acc_best                  │ MaxMetric         │      0 │
 └─────┴───────────────────────────────┴───────────────────┴────────┘
-Trainable params: 1.2 M
-Non-trainable params: 25.0 M
-Total params: 26.2 M
-Total estimated model params size (MB): 104
-[[36m2022-07-06 08:59:48,193[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-Epoch 24  ━━━━━━━━━━━━━━━━━━ 44/44 0:27:05 • 0:00:00 0.05it/s loss: 3.5 v_num:
-                                                              ault val/acc:
-                                                              0.072
-                                                              val/acc_best:
-                                                              0.074 train/acc:
-                                                              0.053
-[[36m2022-07-06 08:59:48,911[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Starting testing![0m
-[[36m2022-07-06 08:59:49,261[0m][[34mpytorch_lightning.utilities.seed[0m][[32mINFO[0m] - Global seed set to 25[0m
-[[36m2022-07-06 08:59:49,397[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Restoring states from the checkpoint path at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m
-[[36m2022-07-06 08:59:50,850[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1][0m
-[[36m2022-07-06 08:59:50,857[0m][[34mpytorch_lightning.accelerators.gpu[0m][[32mINFO[0m] - LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1][0m
-[[36m2022-07-06 08:59:51,137[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Loaded model weights from checkpoint at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃        Test metric        ┃       DataLoader 0        ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         test/acc          │    0.09863375127315521    │
-│         test/loss         │     3.451005697250366     │
-└───────────────────────────┴───────────────────────────┘
-Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3/3 0:00:23 • 0:00:00 0.09it/s
-[[36m2022-07-06 09:00:56,402[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Finalizing![0m
-[[36m2022-07-06 09:00:56,403[0m][[34msrc.training_pipeline[0m][[32mINFO[0m] - Best model ckpt at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/epoch_019.ckpt[0m
+Trainable params: 1.2 M                                                         
+Non-trainable params: 25.0 M                                                    
+Total params: 26.3 M                                                            
+Total estimated model params size (MB): 105                                     
+[[36m2022-07-08 13:06:50,246[0m][[34mpytorch_lightning.utilities.rank_zero[0m][[32mINFO[0m] - Restored all states from the checkpoint file at /data/sri.hegde/ptg-activity-recognition/activity_hydra/checkpoints/rulstm_ep_24.ckpt[0m
