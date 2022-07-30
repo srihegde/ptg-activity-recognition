@@ -122,16 +122,15 @@ hydra:
     - hydra.job.name=train_ddp_process_1
     - hydra.mode=RUN
     task:
-    - trainer.resume_from_checkpoint=checkpoints/rulstm_ep_24.ckpt
     - trainer.gpus=2
     - +trainer.strategy=ddp
   job:
     name: train_ddp_process_1
     chdir: null
-    override_dirname: +trainer.strategy=ddp,trainer.gpus=2,trainer.resume_from_checkpoint=checkpoints/rulstm_ep_24.ckpt
+    override_dirname: +trainer.strategy=ddp,trainer.gpus=2
     id: ???
     num: ???
-    config_name: train.yaml
+    config_name: angel_train.yaml
     env_set: {}
     env_copy: []
     config:
@@ -167,7 +166,7 @@ hydra:
       logger: tensorboard.yaml
       callbacks: default.yaml
       model: rulstm.yaml
-      datamodule: h2o.yaml
+      datamodule: rosbag.yaml
       hydra/env: default
       hydra/callbacks: null
       hydra/job_logging: colorlog

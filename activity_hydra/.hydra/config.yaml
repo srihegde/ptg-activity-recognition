@@ -1,25 +1,25 @@
 original_work_dir: ${hydra:runtime.cwd}
-data_dir: ${original_work_dir}/data/h2o
+data_dir: ${original_work_dir}/data/rosdata
 print_config: true
 ignore_warnings: true
 train: true
 test: true
 seed: 25
-name: default
+name: angel_train
 train_mode: video
 datamodule:
-  _target_: src.datamodules.h2o_datamodule.H2ODataModule
+  _target_: src.datamodules.ros_datamodule.ROSDataModule
   pose_files:
     train_list: ${data_dir}/label_split/pose_train.txt
     val_list: ${data_dir}/label_split/pose_train.txt
     test_list: ${data_dir}/label_split/pose_train.txt
   action_files:
-    train_list: ${data_dir}/label_split/action_train_bk.txt
-    val_list: ${data_dir}/label_split/action_val_int.txt
+    train_list: ${data_dir}/label_split/action_train.txt
+    val_list: ${data_dir}/label_split/action_val.txt
     test_list: ${data_dir}/label_split/action_test.txt
   data_dir: ${data_dir}
   data_type: ${train_mode}
-  batch_size: 4
+  batch_size: 2
   num_workers: 0
   pin_memory: false
   frames_per_segment: 6
@@ -36,7 +36,7 @@ model:
     verb_classes: 12
   temporal:
     _target_: src.models.components.rulstm.RULSTM
-    act_classes: 37
+    act_classes: 6
     hidden: 128
     dropout: 0
     depth: 3
@@ -77,6 +77,6 @@ trainer:
   _target_: pytorch_lightning.Trainer
   gpus: 2
   min_epochs: 1
-  max_epochs: 50
-  resume_from_checkpoint: checkpoints/rulstm_ep_24.ckpt
+  max_epochs: 25
+  resume_from_checkpoint: null
   strategy: ddp

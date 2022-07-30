@@ -1,3 +1,2 @@
-- trainer.resume_from_checkpoint=checkpoints/rulstm_ep_24.ckpt
 - trainer.gpus=2
 - +trainer.strategy=ddp
