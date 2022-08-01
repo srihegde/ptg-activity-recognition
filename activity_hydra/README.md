@@ -57,3 +57,5 @@ You can override any parameter from command line like this
 ```bash
 python train.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
+
+For using SLURM or for performing Multi-GPU training, check out `run_batch.sh`.
