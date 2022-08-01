@@ -57,3 +57,9 @@ You can override any parameter from command line like this
 ```bash
 python train.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
+
+For using SLURM or for performing Multi-GPU training, check out `run_batch.sh`. Also for full error messages, i.e, running code in debug mode, use `HYDRA_FULL_ERROR=1` flag before the command. For example:
+
+```bash
+HYDRA_FULL_ERROR=1 python train.py trainer.gpus=0
+```
