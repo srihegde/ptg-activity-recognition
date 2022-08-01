@@ -15,7 +15,10 @@ class TemporalModule(nn.Module):
         self.n_layers = n_layers
         self.n_hidden = n_hidden
 
+        # 2048 -> The length of features out of last layer of ResNext
         self.fc1 = nn.Linear(2048, n_hidden)
+        # 126 -> 63*2 (Each hand has a descriptor of length 63 
+        # compatible with H2O format)
         self.fc_h = nn.Linear(126, n_hidden)
         self.fc2 = nn.Linear(n_hidden, act_classes)
         self.lstm1 = nn.LSTM(2 * n_hidden, n_hidden, n_layers)

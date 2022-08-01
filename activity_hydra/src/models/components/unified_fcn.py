@@ -27,6 +27,7 @@ class UnifiedFCNModule(nn.Module):
             param.requires_grad = False
 
         self.fhooks = []
+        # 2048 -> The length of features out of last layer of ResNext
         self.fc1 = nn.Linear(2048, self.obj_classes + self.verb_classes)
         for i, l in enumerate(list(self.net._modules.keys())):
             if i in self.output_layers:

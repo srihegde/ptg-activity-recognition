@@ -75,7 +75,8 @@ class H2ODataModule(LightningDataModule):
         self.data_type = data_type
         self.frames_per_segment = frames_per_segment
 
-        # data transformations
+        # data transformations (Normalization values recommended by 
+        # torchvision model zoo)
         if self.data_type == "frame":
             self.transforms = transforms.Compose(
                 [

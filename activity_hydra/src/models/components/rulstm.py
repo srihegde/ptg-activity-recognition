@@ -65,7 +65,11 @@ class RULSTM(nn.Module):
         super(RULSTM, self).__init__()
         self.dropout = nn.Dropout(dropout)
         self.hidden = hidden
+
+        # 2048 -> The length of features out of last layer of ResNext
         self.fc1 = nn.Linear(2048, hidden)
+        # 126 -> 63*2 (Each hand has a descriptor of length 63 
+        # compatible with H2O format)        
         self.fc_h = nn.Linear(126, hidden)
         self.rolling_lstm = OpenLSTM(
             2 * hidden, hidden, num_layers=depth, dropout=dropout if depth > 1 else 0
